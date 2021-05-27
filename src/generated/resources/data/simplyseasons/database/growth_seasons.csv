@@ -1,0 +1,19 @@
+Block,Season Predicate
+minecraft:acacia_sapling,not_winter
+minecraft:bamboo,jungle
+minecraft:bamboo_sapling,jungle
+minecraft:beetroots,autumn
+minecraft:birch_sapling,not_winter
+minecraft:cactus,desert
+minecraft:carrots,autumn
+minecraft:cocoa,jungle
+minecraft:dark_oak_sapling,not_winter
+minecraft:jungle_sapling,jungle
+minecraft:melon_stem,late
+minecraft:oak_sapling,not_winter
+minecraft:potatoes,spring
+minecraft:pumpkin_stem,late
+minecraft:spruce_sapling,not_winter
+minecraft:sugar_cane,jungle
+minecraft:sweet_berry_bush,late
+minecraft:wheat,not_winter
