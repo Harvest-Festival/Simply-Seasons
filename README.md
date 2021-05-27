@@ -12,15 +12,15 @@ Add to your build.gradle:
 ```gradle
 repositories {
   maven {
-    // url of the maven that hosts simplyseasons files
-    url //TODO
+    url 'https://maven.joshiejack.uk/'
   }
 }
 
 dependencies {
-  // compile against Simply Seasons
-  deobfCompile "uk.joshiejack.simplyseasons:Simply-Seasons:${minecraft_version}-${simplyseasons_version}"
+    compile fg.deobf("uk.joshiejack.penguinlib:Penguin-Lib:${minecraft_version}-${penguinlib_version}")
+    compile fg.deobf("uk.joshiejack.simplyseasons:Simply-Seasons:${minecraft_version}-${simplyseasons_version}")
 }
 ```
 
-`${minecraft_version}` & `${simplyseasons_version}` can be found //TODO, check the file name of the version you want.
+`${$penguinlib_version}` can be found [here](https://maven.joshiejack.uk/uk/joshiejack/penguinlib/Penguin-Lib/)
+`${simplyseasons_version}` can be found [here](https://maven.joshiejack.uk/uk/joshiejack/simplyseasons/Simply-Seasons/)

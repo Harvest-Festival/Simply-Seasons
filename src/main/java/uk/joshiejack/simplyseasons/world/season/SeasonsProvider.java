@@ -1,4 +1,4 @@
-package uk.joshiejack.simplyseasons.world;
+package uk.joshiejack.simplyseasons.world.season;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -13,7 +13,6 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
-import uk.joshiejack.simplyseasons.SeasonsConfig;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
@@ -26,6 +25,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class SeasonsProvider implements ISeasonsProvider {
+    public static int DAYS_PER_SEASON_MULTIPLIER = 1;
     private final EnumMap<Season, EnumSet<Season>> seasonsSets = new EnumMap<>(Season.class);
     private final Season[] seasons;
     private final int length;
@@ -45,7 +45,7 @@ public class SeasonsProvider implements ISeasonsProvider {
     public void recalculate(ServerWorld world) {
         long time = world.getDayTime();
         season = seasons[Math.max(0, (int) Math.floor(((float) TimeHelper.getElapsedDays(time) /
-                (float) (SeasonsConfig.daysPerSeasonMultiplier * SimplySeasons.DAYS_PER_SEASON)) % length))];
+                (float) (DAYS_PER_SEASON_MULTIPLIER * SimplySeasons.DAYS_PER_SEASON)) % length))];
     }
 
     @Override

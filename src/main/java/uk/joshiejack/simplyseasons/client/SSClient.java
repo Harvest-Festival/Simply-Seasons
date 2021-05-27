@@ -5,7 +5,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.Season;
-import uk.joshiejack.simplyseasons.world.date.CalendarDate;
+import uk.joshiejack.simplyseasons.world.CalendarDate;
 import uk.joshiejack.simplyseasons.world.weather.Weather;
 
 @OnlyIn(Dist.CLIENT)

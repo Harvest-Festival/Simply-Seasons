@@ -1,4 +1,4 @@
-package uk.joshiejack.simplyseasons.world;
+package uk.joshiejack.simplyseasons.world.season;
 
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;

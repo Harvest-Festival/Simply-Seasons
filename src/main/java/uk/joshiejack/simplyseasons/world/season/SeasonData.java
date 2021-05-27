@@ -1,4 +1,4 @@
-package uk.joshiejack.simplyseasons.world;
+package uk.joshiejack.simplyseasons.world.season;
 
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.eventbus.api.EventPriority;

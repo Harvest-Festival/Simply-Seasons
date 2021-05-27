@@ -17,7 +17,7 @@ import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.data.SSDatabase;
 import uk.joshiejack.simplyseasons.data.SSLanguage;
 import uk.joshiejack.simplyseasons.loot.SeasonCheck;
-import uk.joshiejack.simplyseasons.world.SeasonsProvider;
+import uk.joshiejack.simplyseasons.world.season.SeasonsProvider;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(SimplySeasons.MODID)

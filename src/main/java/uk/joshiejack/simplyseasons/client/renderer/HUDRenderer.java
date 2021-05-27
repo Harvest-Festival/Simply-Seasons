@@ -18,7 +18,7 @@ import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.SSClient;
-import uk.joshiejack.simplyseasons.world.date.CalendarDate;
+import uk.joshiejack.simplyseasons.world.CalendarDate;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = SimplySeasons.MODID)

@@ -9,8 +9,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import uk.joshiejack.penguinlib.util.helpers.generic.StringHelper;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.Season;
-import uk.joshiejack.simplyseasons.world.SeasonData;
-import uk.joshiejack.simplyseasons.world.date.CalendarDate;
+import uk.joshiejack.simplyseasons.world.season.SeasonData;
+import uk.joshiejack.simplyseasons.world.CalendarDate;
 
 import java.util.EnumMap;
 import java.util.Locale;

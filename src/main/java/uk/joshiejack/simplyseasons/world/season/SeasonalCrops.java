@@ -1,4 +1,4 @@
-package uk.joshiejack.simplyseasons.world;
+package uk.joshiejack.simplyseasons.world.season;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;

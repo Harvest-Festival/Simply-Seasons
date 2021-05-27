@@ -15,7 +15,6 @@ import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.network.SyncDatePacket;
 import uk.joshiejack.simplyseasons.network.SyncSeasonPacket;
-import uk.joshiejack.simplyseasons.world.date.CalendarDate;
 
 @SuppressWarnings("unused, ConstantConditions")
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
