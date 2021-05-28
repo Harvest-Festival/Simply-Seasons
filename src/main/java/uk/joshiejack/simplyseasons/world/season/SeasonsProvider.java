@@ -1,6 +1,7 @@
 package uk.joshiejack.simplyseasons.world.season;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -8,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.INBTSerializable;
+import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
@@ -19,7 +21,6 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSerializable<CompoundNBT> {
-    public static int DAYS_PER_SEASON_MULTIPLIER = 1;
     private final EnumMap<Season, EnumSet<Season>> seasonsSets = new EnumMap<>(Season.class);
     private final Season[] seasons;
     private final int length;
@@ -34,11 +35,15 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
             seasonsSets.put(season, EnumSet.of(season));
     }
 
+    private static int serverTypeMultiplier(World world) {
+        return world.getServer() instanceof DedicatedServer ? 10 : 1;
+    }
+
     @Override
     public void recalculate(World world) {
         long time = world.getDayTime();
         season = seasons[Math.max(0, (int) Math.floor(((float) TimeHelper.getElapsedDays(time) /
-                (float) (DAYS_PER_SEASON_MULTIPLIER * SimplySeasons.DAYS_PER_SEASON)) % length))];
+                (float) (TimeUnitRegistry.get("season_length_multiplier") * SimplySeasons.DAYS_PER_SEASON * serverTypeMultiplier(world))) % length))];
         super.recalculate(world); //call the super to perform updates
     }
 
