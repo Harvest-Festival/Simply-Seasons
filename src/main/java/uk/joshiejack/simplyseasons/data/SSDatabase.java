@@ -23,12 +23,12 @@ public class SSDatabase extends AbstractDatabaseProvider {
 
     @Override
     protected void addDatabaseEntries() {
-        addSeasonData(Season.SPRING, TextFormatting.GREEN, 0, 0x80B76C, 0, 0x87CEFA, 6000, 20500);
-        addSeasonData(Season.SUMMER, TextFormatting.YELLOW, 0.1, 0, 0x4A9C2E, 0x79a7ff, 5000, 21500);
-        addSeasonData(Season.AUTUMN, TextFormatting.GOLD, -0.1, 0xB25900, 0xFF9900, 0x8CBED6, 7000, 19000);
-        addSeasonData(Season.WINTER, TextFormatting.GRAY, -0.7, 0xFFFFFF, 0xE6E6E6, 0xBFFFFF, 8000, 16500);
-        addSeasonData(Season.WET, TextFormatting.BLUE, -0.1, 0, 0x55FF1C, 0x334873, 0, 0);
-        addSeasonData(Season.DRY, TextFormatting.GOLD, 0, 0, 0, 0x638DBF, 0, 0);
+        addSeasonData(Season.SPRING, TextFormatting.GREEN, 0, "0x80B76C", "0", "0x87CEFA", 6000, 20500);
+        addSeasonData(Season.SUMMER, TextFormatting.YELLOW, 0.1, "0", "0x4A9C2E", "0x79a7ff", 5000, 21500);
+        addSeasonData(Season.AUTUMN, TextFormatting.GOLD, -0.1, "0xB25900", "0xFF9900", "0x8CBED6", 7000, 19000);
+        addSeasonData(Season.WINTER, TextFormatting.GRAY, -0.7, "0xFFFFFF", "0xE6E6E6", "0xBFFFFF", 8000, 16500);
+        addSeasonData(Season.WET, TextFormatting.BLUE, -0.1, "0", "0x55FF1C", "0x334873", 0, 0);
+        addSeasonData(Season.DRY, TextFormatting.GOLD, 0, "0", "0", "0x638DBF", 0, 0);
         addSeasonToWorld(World.OVERWORLD, Season.MAIN);
         addSeasonPredicate("spring", Season.SPRING);
         addSeasonPredicate("summer", Season.SUMMER);
@@ -91,7 +91,7 @@ public class SSDatabase extends AbstractDatabaseProvider {
                 CSVUtils.join(Lists.newArrayList(seasons).stream().map(s -> s.name().toLowerCase(Locale.ROOT)).toArray())));
     }
 
-    private void addSeasonData(Season season, TextFormatting color, double temperature, int leaves, int grass, int sky, int sunrise, int sunset) {
+    private void addSeasonData(Season season, TextFormatting color, double temperature, String leaves, String grass, String sky, int sunrise, int sunset) {
         addEntry("seasons_data", "Season,HUD,Temperature,Leaves,Grass,Sky,Sunrise,Sunset",
                 CSVUtils.join(season.name().toLowerCase(Locale.ROOT), color.getName(), temperature, leaves, grass, sky, sunrise, sunset));
     }

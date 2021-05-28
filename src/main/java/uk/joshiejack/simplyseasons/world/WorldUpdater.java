@@ -3,7 +3,7 @@ package uk.joshiejack.simplyseasons.world;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -18,13 +18,22 @@ import uk.joshiejack.simplyseasons.network.SeasonChangedPacket;
 @SuppressWarnings("unused, ConstantConditions")
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class WorldUpdater {
-    @SubscribeEvent
-    public static void onPlayerJoinedWorld(EntityJoinWorldEvent event) {
-        if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
-            PenguinNetwork.sendToClient(new DateChangedPacket(), (ServerPlayerEntity) event.getEntity());
-            event.getWorld().getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
-                    .ifPresent(provider -> PenguinNetwork.sendToClient(new SeasonChangedPacket(), (ServerPlayerEntity) event.getEntity()));
+    private static void sendUpdates(PlayerEntity player) {
+        if (!player.level.isClientSide) {
+            PenguinNetwork.sendToClient(new DateChangedPacket(), (ServerPlayerEntity) player);
+            player.level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
+                    .ifPresent(provider -> PenguinNetwork.sendToClient(new SeasonChangedPacket(), (ServerPlayerEntity) player));
         }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        sendUpdates(event.getPlayer());
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        sendUpdates(event.getPlayer());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -35,7 +44,7 @@ public class WorldUpdater {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event) { //Periodically update the seasonal data for the client
-        if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.END && event.world.getDayTime() % 60 == 0)
+        if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.END && event.world.getDayTime() % 30 == 0)
             event.world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY).ifPresent(provider -> provider.recalculate(event.world));
     }
 }
