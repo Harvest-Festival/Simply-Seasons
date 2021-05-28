@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "uk.joshiejack.simplyseasons.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "simplyseasons.refmap.json",
+  "mixins": [
+    "SSWorld"
+  ],
+  "client": [
+    "client.SSClientWorld"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

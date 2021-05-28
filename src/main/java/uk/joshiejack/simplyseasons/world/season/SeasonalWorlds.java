@@ -13,6 +13,7 @@ import uk.joshiejack.penguinlib.events.DatabaseLoadedEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -30,7 +31,8 @@ public class SeasonalWorlds {
 
     @SubscribeEvent
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
-        PROVIDERS.clear();
+        if (SereneSeasonsPlugin.loaded) return; //They will handle which worlds have seasons
+        PROVIDERS.clear(); //Clear out the existing providers, as we're reloading
         event.table("seasonal_worlds").rows().forEach(row -> {
             RegistryKey<World> world = RegistryKey.create(Registry.DIMENSION_REGISTRY, row.getRL("world"));
             PROVIDERS.put(world, new SeasonsProvider(CSVUtils.parse(row.get("seasons")).stream()

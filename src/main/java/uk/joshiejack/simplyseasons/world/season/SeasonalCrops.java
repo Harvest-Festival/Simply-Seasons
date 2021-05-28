@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import uk.joshiejack.penguinlib.events.DatabaseLoadedEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.loot.SeasonPredicate;
+import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public class SeasonalCrops {
 
     @SubscribeEvent
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
+        if (SereneSeasonsPlugin.loaded) return; //let them handle this
         REGISTRY.clear(); //Reloading
         event.table("growth_seasons").rows().forEach(row -> SeasonalCrops.REGISTRY.put(row.block(),
                 SeasonPredicate.REGISTRY.get(row.get("season predicate").toString())));

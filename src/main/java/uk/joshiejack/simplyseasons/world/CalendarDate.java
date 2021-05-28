@@ -12,6 +12,7 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
     private DayOfWeek weekday = DayOfWeek.MONDAY;
     private int monthday = 1;
     private int year = 1;
+    private boolean set;
 
     public CalendarDate() {}
     public CalendarDate(DayOfWeek weekday, int monthday, int year) {
@@ -37,10 +38,11 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
         return year;
     }
 
-    public void set(CalendarDate date) {
-        this.weekday = date.weekday;
-        this.monthday = date.monthday;
-        this.year = date.year;
+    public void update(long time) {
+        set = true;
+        weekday = TimeHelper.getWeekday(time);
+        monthday = 1 + getDay(time);
+        year = 1 + getYear(time);
     }
 
     @Override
@@ -69,5 +71,9 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
 
     public static int getDay(long totalTime) {
         return TimeHelper.getElapsedDays(totalTime) % SimplySeasons.DAYS_PER_SEASON;
+    }
+
+    public boolean isSet() {
+        return set;
     }
 }

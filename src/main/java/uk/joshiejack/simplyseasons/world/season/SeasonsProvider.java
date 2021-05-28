@@ -1,36 +1,30 @@
 package uk.joshiejack.simplyseasons.world.season;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.INBTSerializable;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
 import uk.joshiejack.simplyseasons.SimplySeasons;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class SeasonsProvider implements ISeasonsProvider {
+public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSerializable<CompoundNBT> {
     public static int DAYS_PER_SEASON_MULTIPLIER = 1;
     private final EnumMap<Season, EnumSet<Season>> seasonsSets = new EnumMap<>(Season.class);
     private final Season[] seasons;
     private final int length;
-    private final LazyOptional<SeasonsProvider> capability;
     private Season season;
+
 
     public SeasonsProvider(Season... seasons) {
         this.seasons = seasons;
@@ -38,18 +32,18 @@ public class SeasonsProvider implements ISeasonsProvider {
         this.season = seasons[0];
         for (Season season: Season.values())
             seasonsSets.put(season, EnumSet.of(season));
-        this.capability = LazyOptional.of(() -> this);
     }
 
     @Override
-    public void recalculate(ServerWorld world) {
+    public void recalculate(World world) {
         long time = world.getDayTime();
         season = seasons[Math.max(0, (int) Math.floor(((float) TimeHelper.getElapsedDays(time) /
                 (float) (DAYS_PER_SEASON_MULTIPLIER * SimplySeasons.DAYS_PER_SEASON)) % length))];
+        super.recalculate(world); //call the super to perform updates
     }
 
     @Override
-    public Season getSeason() {
+    public Season getSeason(World world) {
         return season;
     }
 
@@ -74,13 +68,6 @@ public class SeasonsProvider implements ISeasonsProvider {
         return seasons.isEmpty() ? seasonsSets.get(biome.shouldSnow(world, pos) ? Season.WINTER: fromBiomeOr(world, season, biome)) : seasons;
     }
 
-    @SuppressWarnings("ConstantConditions")
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return cap == SSeasonsAPI.SEASONS_CAPABILITY ? capability.cast() : LazyOptional.empty();
-    }
-
     @Nullable
     @Override
     public CompoundNBT serializeNBT() {
@@ -94,17 +81,4 @@ public class SeasonsProvider implements ISeasonsProvider {
         season = Season.values()[nbt.getByte("Season")];
     }
 
-    //Stay down here out of my way!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public static class Storage implements Capability.IStorage<ISeasonsProvider> {
-        @Override
-        public void readNBT(Capability<ISeasonsProvider> capability, ISeasonsProvider instance, Direction side, INBT nbt) {
-            instance.deserializeNBT((CompoundNBT) nbt);
-        }
-
-        @Nullable
-        @Override
-        public INBT writeNBT(Capability<ISeasonsProvider> capability, ISeasonsProvider instance, Direction side) {
-            return instance.serializeNBT();
-        }
-    }
 }
