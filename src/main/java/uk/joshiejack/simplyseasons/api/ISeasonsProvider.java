@@ -8,9 +8,15 @@ public interface ISeasonsProvider extends ILocalizedSeasonProvider, ICapabilityP
     /**
      *  Grab the season for the entire world location.
      *
+     * @param   world   the world
      * @return the current season
      */
     Season getSeason(World world);
+
+    /** Called to change the season, on both server and client side
+     * @param world     the world
+     * @param season    the season**/
+    void setSeason(World world, Season season);
 
     /**
      * Updates the current season when the time changes

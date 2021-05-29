@@ -30,8 +30,9 @@ public abstract class AbstractSeasonsProvider implements ISeasonsProvider {
     @Override
     public void recalculate(World world) {
         if (!world.isClientSide) {
-            if (previousSeason != getSeason(world))
-                PenguinNetwork.sendToDimension(new SeasonChangedPacket(), world.dimension());
+            Season season = getSeason(world);
+            if (previousSeason != season)
+                PenguinNetwork.sendToDimension(new SeasonChangedPacket(season), world.dimension());
             long elapsed = TimeHelper.getElapsedDays(world.getDayTime());
             if (elapsed != previousElapsed)
                 PenguinNetwork.sendToDimension(new DateChangedPacket(), world.dimension());

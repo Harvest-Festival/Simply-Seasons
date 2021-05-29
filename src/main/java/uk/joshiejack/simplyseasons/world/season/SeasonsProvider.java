@@ -52,6 +52,16 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
         return season;
     }
 
+    @Override
+    public void setSeason(World world, Season season) {
+        if (world.isClientSide)
+            this.season = season;
+        else {
+            if (this.season.ordinal() == season.ordinal()) return;
+            //TODO: Set the season
+        }
+    }
+
     private Season fromBiomeOr(World world, Season season, Biome biome) {
         //If we can snow, it is winter
         //Savanna, Wet season = Summer

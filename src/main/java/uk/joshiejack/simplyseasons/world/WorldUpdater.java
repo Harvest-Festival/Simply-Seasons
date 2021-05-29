@@ -22,7 +22,7 @@ public class WorldUpdater {
         if (!player.level.isClientSide) {
             PenguinNetwork.sendToClient(new DateChangedPacket(), (ServerPlayerEntity) player);
             player.level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
-                    .ifPresent(provider -> PenguinNetwork.sendToClient(new SeasonChangedPacket(), (ServerPlayerEntity) player));
+                    .ifPresent(provider -> PenguinNetwork.sendToClient(new SeasonChangedPacket(provider.getSeason(player.level)), (ServerPlayerEntity) player));
         }
     }
 
@@ -39,7 +39,10 @@ public class WorldUpdater {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onNewDay(NewDayEvent event) { //Force an update when the day ticks over, so it happens instantly
         PenguinNetwork.sendToDimension(new DateChangedPacket(), event.getWorld().dimension());
-        PenguinNetwork.sendToDimension(new SeasonChangedPacket(), event.getWorld().dimension());
+        event.getWorld().getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
+                .ifPresent(provider ->
+                        PenguinNetwork.sendToDimension(new SeasonChangedPacket(provider.getSeason(event.getWorld())), event.getWorld().dimension()));
+
     }
 
     @SubscribeEvent

@@ -3,6 +3,9 @@ package uk.joshiejack.simplyseasons.plugins;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import sereneseasons.api.season.SeasonHelper;
+import sereneseasons.handler.season.SeasonHandler;
+import sereneseasons.season.SeasonSavedData;
+import sereneseasons.season.SeasonTime;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.world.season.AbstractSeasonsProvider;
@@ -20,6 +23,14 @@ public class SereneSeasonsSeasonProvider extends AbstractSeasonsProvider {
     @Override
     public Season getSeason(World world) {
         return SEASON_MAPPER.get(SeasonHelper.getSeasonState(world).getSeason());
+    }
+
+    @Override
+    public void setSeason(World world, Season season) {
+        SeasonSavedData seasonData = SeasonHandler.getSeasonSavedData(world);
+        seasonData.seasonCycleTicks = SeasonTime.ZERO.getSubSeasonDuration() * (season.ordinal() * 3);
+        seasonData.setDirty();
+        SeasonHandler.sendSeasonUpdate(world);
     }
 
     @Override

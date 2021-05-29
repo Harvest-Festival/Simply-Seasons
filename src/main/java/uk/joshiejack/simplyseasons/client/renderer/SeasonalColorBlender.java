@@ -25,7 +25,7 @@ import uk.joshiejack.simplyseasons.world.season.SeasonData;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SeasonalColorBlender {
-    private static int getBlendedColor(int original, int additional, int size) {
+    public static int getBlendedColor(int original, int additional, int size) {
         if (additional == 0) return original;
         try {
             int r = (original & 0xFF0000) >> 16;
