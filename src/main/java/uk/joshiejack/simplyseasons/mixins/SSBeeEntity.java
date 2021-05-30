@@ -1,0 +1,64 @@
+package uk.joshiejack.simplyseasons.mixins;
+
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.BeeEntity;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
+import uk.joshiejack.simplyseasons.api.Season;
+
+import java.util.Set;
+
+@Mixin(BeeEntity.class)
+public abstract class SSBeeEntity extends AnimalEntity {
+    @Shadow
+    private BeeEntity.PollinateGoal beePollinateGoal;
+    @Shadow
+    private BeeEntity.FindFlowerGoal goToKnownFlowerGoal;
+    private Goal findPollinationTargetGoal;
+    private Goal wanderGoal;
+
+    protected SSBeeEntity(EntityType<? extends AnimalEntity> type, World world) {
+        super(type, world);
+    }
+
+    /**
+     * Saves a copy of the pollination and wander goals for this bee
+     **/
+    @Inject(method = "registerGoals", at = @At(value = "TAIL"))
+    protected void registerGoals(CallbackInfo ci) {
+        findPollinationTargetGoal = this.goalSelector.availableGoals.stream().filter(goal -> goal.getGoal() instanceof BeeEntity.FindPollinationTargetGoal).findFirst().get().getGoal();
+        wanderGoal = this.goalSelector.availableGoals.stream().filter(goal -> goal.getGoal() instanceof BeeEntity.WanderGoal).findFirst().get().getGoal();
+    }
+
+    /**
+     * Checks the season every 5 seconds
+     *  and removes/adds the goals
+     **/
+    @Inject(method = "tick", at = @At(value = "TAIL"))
+    protected void updateGoals(CallbackInfo ci) {
+        if (!level.isClientSide && level.getDayTime() % 100 == 0) {
+            level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
+                    .ifPresent(provider -> {
+                        Set<Season> seasons = provider.getSeasonsAt(level, blockPosition());
+                        //Remove the goals first to be sure, that they aren't added twice
+                        this.goalSelector.removeGoal(beePollinateGoal);
+                        this.goalSelector.removeGoal(goToKnownFlowerGoal);
+                        this.goalSelector.removeGoal(findPollinationTargetGoal);
+                        this.goalSelector.removeGoal(wanderGoal);
+                        if (!(seasons.size() == 1 && seasons.contains(Season.WINTER))) {
+                            this.goalSelector.addGoal(4, beePollinateGoal);
+                            this.goalSelector.addGoal(6, goToKnownFlowerGoal);
+                            this.goalSelector.addGoal(7, findPollinationTargetGoal);
+                            this.goalSelector.addGoal(8, wanderGoal);
+                        }
+                    });
+        }
+    }
+}
