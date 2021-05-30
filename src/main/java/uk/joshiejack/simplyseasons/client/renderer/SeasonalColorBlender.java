@@ -50,7 +50,7 @@ public class SeasonalColorBlender {
             World world = Minecraft.getInstance().level;
             LazyOptional<ISeasonsProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (optional.isPresent()) {
-                SeasonData data = SeasonData.DATA.get(optional.resolve().get().getSeason(world));
+                SeasonData data = SeasonData.get(optional.resolve().get().getSeason(world));
                 return getBlendedColor(FoliageColors.getBirchColor(), data.leaves, 2);
             }
 
@@ -68,7 +68,7 @@ public class SeasonalColorBlender {
             int original = grass.getColor(biome, x, z);
             LazyOptional<ISeasonsProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (optional.isPresent()) {
-                SeasonData data = SeasonData.DATA.get(optional.resolve().get().getSeason(world));
+                SeasonData data = SeasonData.get(optional.resolve().get().getSeason(world));
                 return getBlendedColor(original, data.grass, 2);
             } else return original;
         };
@@ -79,7 +79,7 @@ public class SeasonalColorBlender {
             LazyOptional<ISeasonsProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (optional.isPresent()) {
                 Season season = optional.resolve().get().getSeason(world);
-                SeasonData data = SeasonData.DATA.get(season);
+                SeasonData data = SeasonData.get(season);
                 return getBlendedColor(original, data.leaves, season == Season.AUTUMN ? 4 : 2);
             } else return original;
         };

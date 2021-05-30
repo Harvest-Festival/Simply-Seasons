@@ -13,7 +13,8 @@ import java.util.Locale;
 
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonData {
-    public static final EnumMap<Season, SeasonData> DATA = new EnumMap<>(Season.class);
+    private static final EnumMap<Season, SeasonData> DATA = new EnumMap<>(Season.class);
+    private static SeasonData EMPTY = new SeasonData(TextFormatting.WHITE, 0F, 0, 0, 0, 0, 0);
     public final TextFormatting hud;
     public final int leaves;
     public final int grass;
@@ -30,6 +31,10 @@ public class SeasonData {
         this.grass = grass;
         this.sunrise = sunrise;
         this.sunset = sunset;
+    }
+
+    public static SeasonData get(Season season) {
+        return DATA.getOrDefault(season, EMPTY);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

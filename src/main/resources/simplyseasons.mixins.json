@@ -4,10 +4,14 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "simplyseasons.refmap.json",
   "mixins": [
+    "SSBiome",
+    "SSCauldronBlock",
+    "SSSnowGolemEntity",
     "SSWorld"
   ],
   "client": [
-    "client.SSClientWorld"
+    "client.SSClientWorld",
+    "client.SSWorldRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

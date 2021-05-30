@@ -3,9 +3,7 @@ package uk.joshiejack.simplyseasons.mixins.client;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -13,7 +11,8 @@ import net.minecraft.world.storage.ISpawnWorldInfo;
 import net.minecraftforge.common.util.LazyOptional;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
@@ -45,59 +44,15 @@ public abstract class SSClientWorld extends World {
         } else return f1 * f1 * 0.5F;
     }
 
-    @Shadow
-    private int skyFlashTime;
-
     /**
      * Seasonal sky colouring
      *
      * @author joshiejack
      */
-    @Overwrite
-    public Vector3d getSkyColor(BlockPos p_228318_1_, float p_228318_2_) {
-        float f = this.getTimeOfDay(p_228318_2_);
-        float f1 = MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.5F;
-        f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
-        Biome biome = this.getBiome(p_228318_1_);
+    @Redirect(method = "getSkyColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/Biome;getSkyColor()I"))
+    public int getSkyColor(Biome biome) {
         LazyOptional<ISeasonsProvider> provider = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
-        int i = provider.isPresent() ? SeasonalColorBlender.getBlendedColor(biome.getSkyColor(),
-                SeasonData.DATA.get(provider.resolve().get().getSeason(this)).sky, 10) : biome.getSkyColor();
-        float f2 = (float) (i >> 16 & 255) / 255.0F;
-        float f3 = (float) (i >> 8 & 255) / 255.0F;
-        float f4 = (float) (i & 255) / 255.0F;
-        f2 = f2 * f1;
-        f3 = f3 * f1;
-        f4 = f4 * f1;
-        float f5 = this.getRainLevel(p_228318_2_);
-        if (f5 > 0.0F) {
-            float f6 = (f2 * 0.3F + f3 * 0.59F + f4 * 0.11F) * 0.6F;
-            float f7 = 1.0F - f5 * 0.75F;
-            f2 = f2 * f7 + f6 * (1.0F - f7);
-            f3 = f3 * f7 + f6 * (1.0F - f7);
-            f4 = f4 * f7 + f6 * (1.0F - f7);
-        }
-
-        float f9 = this.getThunderLevel(p_228318_2_);
-        if (f9 > 0.0F) {
-            float f10 = (f2 * 0.3F + f3 * 0.59F + f4 * 0.11F) * 0.2F;
-            float f8 = 1.0F - f9 * 0.75F;
-            f2 = f2 * f8 + f10 * (1.0F - f8);
-            f3 = f3 * f8 + f10 * (1.0F - f8);
-            f4 = f4 * f8 + f10 * (1.0F - f8);
-        }
-
-        if (this.skyFlashTime > 0) {
-            float f11 = (float) this.skyFlashTime - p_228318_2_;
-            if (f11 > 1.0F) {
-                f11 = 1.0F;
-            }
-
-            f11 = f11 * 0.45F;
-            f2 = f2 * (1.0F - f11) + 0.8F * f11;
-            f3 = f3 * (1.0F - f11) + 0.8F * f11;
-            f4 = f4 * (1.0F - f11) + 1.0F * f11;
-        }
-
-        return new Vector3d(f2, f3, f4);
+        return provider.isPresent() ? SeasonalColorBlender.getBlendedColor(biome.getSkyColor(),
+                SeasonData.get(provider.resolve().get().getSeason(this)).sky, 10) : biome.getSkyColor();
     }
 }

@@ -21,7 +21,6 @@ public class SSClient {
     public static final SSClient INSTANCE = new SSClient();
     private Weather weather = Weather.CLEAR;
 
-
     public Weather getWeather() {
         return weather;
     }

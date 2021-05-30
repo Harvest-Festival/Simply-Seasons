@@ -2,8 +2,11 @@ package uk.joshiejack.simplyseasons.world.season;
 
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,6 +15,7 @@ import uk.joshiejack.penguinlib.data.database.CSVUtils;
 import uk.joshiejack.penguinlib.events.DatabaseLoadedEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 
@@ -38,5 +42,14 @@ public class SeasonalWorlds {
             PROVIDERS.put(world, new SeasonsProvider(CSVUtils.parse(row.get("seasons")).stream()
                     .map(string -> Season.valueOf(string.toUpperCase(Locale.ROOT))).toArray(Season[]::new)));
         });
+    }
+
+    public static float getTemperature(World world, Biome biome, BlockPos pos) {
+        LazyOptional<ISeasonsProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        if (provider.isPresent()) {
+            return biome.getTemperature(pos) + SeasonData.get(provider.resolve().get().getSeason(world)).temperature;
+        }
+
+        return biome.getTemperature(pos);
     }
 }
