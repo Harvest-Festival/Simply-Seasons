@@ -2,7 +2,6 @@ package uk.joshiejack.simplyseasons.mixins;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,11 +19,9 @@ public abstract class SSBiome {
 
     @Inject(method = "shouldSnow", at = @At("HEAD"), cancellable = true)
     public void shouldSnow(IWorldReader world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (world instanceof World) {
-            float temperature = SeasonalWorlds.getTemperature((World) world, world.getBiome(pos), pos);
-            if (temperature >= 0.15F)
-                cir.setReturnValue(false);
-        }
+        float temperature = SeasonalWorlds.getTemperature(world, world.getBiome(pos), pos);
+        if (temperature >= 0.15F)
+            cir.setReturnValue(false);
     }
 
     @Redirect(method = "shouldFreeze(Lnet/minecraft/world/IWorldReader;Lnet/minecraft/util/math/BlockPos;Z)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/Biome;getTemperature(Lnet/minecraft/util/math/BlockPos;)F"))
@@ -34,10 +31,8 @@ public abstract class SSBiome {
 
     @Inject(method = "shouldFreeze(Lnet/minecraft/world/IWorldReader;Lnet/minecraft/util/math/BlockPos;Z)Z", at = @At("HEAD"), cancellable = true)
     public void shouldFreeze(IWorldReader world, BlockPos pos, boolean bool, CallbackInfoReturnable<Boolean> cir) {
-        if (world instanceof World) {
-            float temperature = SeasonalWorlds.getTemperature((World) world, world.getBiome(pos), pos);
-            if (temperature >= 0.15F)
-                cir.setReturnValue(false);
-        }
+        float temperature = SeasonalWorlds.getTemperature(world, world.getBiome(pos), pos);
+        if (temperature >= 0.15F)
+            cir.setReturnValue(false);
     }
 }

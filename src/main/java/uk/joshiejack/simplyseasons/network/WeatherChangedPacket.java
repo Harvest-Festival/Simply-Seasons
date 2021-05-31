@@ -5,15 +5,15 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import uk.joshiejack.penguinlib.network.PenguinPacket;
 import uk.joshiejack.penguinlib.util.PenguinLoader;
-import uk.joshiejack.simplyseasons.client.SSClient;
+import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.world.weather.Weather;
 
 @PenguinLoader.Packet(NetworkDirection.PLAY_TO_CLIENT)
-public class SyncWeatherPacket extends PenguinPacket {
+public class WeatherChangedPacket extends PenguinPacket {
     private Weather weather;
 
-    public SyncWeatherPacket() {}
-    public SyncWeatherPacket(Weather weather) {
+    public WeatherChangedPacket() {}
+    public WeatherChangedPacket(Weather weather) {
         this.weather = weather;
     }
 
@@ -29,6 +29,7 @@ public class SyncWeatherPacket extends PenguinPacket {
 
     @Override
     public void handle(PlayerEntity player) {
-        SSClient.INSTANCE.setWeather(weather);
+        player.level.getCapability(SSeasonsAPI.WEATHER_CAPABILITY)
+                .ifPresent(provider -> provider.setWeather(player.level, weather));
     }
 }

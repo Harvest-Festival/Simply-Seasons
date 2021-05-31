@@ -17,6 +17,10 @@ import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
 @Mixin(World.class)
 public abstract class SSWorld implements IWorld, AutoCloseable, IForgeWorld {
+    public World asWorld() {
+        return (World) (Object) this;
+    }
+
     /**
      * Overrides the sunrise and sunset based on the time of day
      *
@@ -25,8 +29,8 @@ public abstract class SSWorld implements IWorld, AutoCloseable, IForgeWorld {
     public float getTimeOfDay(float partialTicks) {
         LazyOptional<ISeasonsProvider> optional = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         if (optional.isPresent()) {
-            SeasonData data = SeasonData.get(optional.resolve().get().getSeason((World) (Object) this));
-            long time = TimeHelper.getTimeOfDay(((World) (Object) this).getDayTime());
+            SeasonData data = SeasonData.get(optional.resolve().get().getSeason(asWorld()));
+            long time = TimeHelper.getTimeOfDay(asWorld().getDayTime());
             if (time >= data.sunrise && time < data.sunset) {
                 long daytime = (data.sunset - data.sunrise);
                 return (((time - data.sunrise) * -0.5f) / daytime) - 0.75f;

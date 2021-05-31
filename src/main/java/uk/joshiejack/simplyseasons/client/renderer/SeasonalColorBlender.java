@@ -17,6 +17,7 @@ import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 
@@ -45,7 +46,7 @@ public class SeasonalColorBlender {
 
     @SubscribeEvent
     public static void onBlockColors(ColorHandlerEvent.Block colors) {
-        if (SereneSeasonsPlugin.loaded) return; //They can handle this
+        if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded) return; //They can handle this
         colors.getBlockColors().register((state, reader, pos, color) -> {
             World world = Minecraft.getInstance().level;
             LazyOptional<ISeasonsProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
@@ -60,7 +61,7 @@ public class SeasonalColorBlender {
 
     @SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
-        if (SereneSeasonsPlugin.loaded) return;  //They can handle this
+        if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded) return;  //They can handle this
         ColorResolver grass = BiomeColors.GRASS_COLOR_RESOLVER;
         ColorResolver foliage = BiomeColors.FOLIAGE_COLOR_RESOLVER;
         BiomeColors.GRASS_COLOR_RESOLVER = (biome, x, z) -> {
@@ -80,7 +81,7 @@ public class SeasonalColorBlender {
             if (optional.isPresent()) {
                 Season season = optional.resolve().get().getSeason(world);
                 SeasonData data = SeasonData.get(season);
-                return getBlendedColor(original, data.leaves, season == Season.AUTUMN ? 4 : 2);
+                return getBlendedColor(original, data.leaves, season == Season.AUTUMN ? 8 : 2);
             } else return original;
         };
     }

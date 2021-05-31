@@ -1,11 +1,16 @@
 package uk.joshiejack.simplyseasons.world.season;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -17,6 +22,7 @@ import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 
 import java.util.HashMap;
@@ -35,7 +41,7 @@ public class SeasonalWorlds {
 
     @SubscribeEvent
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
-        if (SereneSeasonsPlugin.loaded) return; //They will handle which worlds have seasons
+        if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded) return; //They will handle which worlds have seasons
         PROVIDERS.clear(); //Clear out the existing providers, as we're reloading
         event.table("seasonal_worlds").rows().forEach(row -> {
             RegistryKey<World> world = RegistryKey.create(Registry.DIMENSION_REGISTRY, row.getRL("world"));
@@ -44,12 +50,20 @@ public class SeasonalWorlds {
         });
     }
 
-    public static float getTemperature(World world, Biome biome, BlockPos pos) {
-        LazyOptional<ISeasonsProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
-        if (provider.isPresent()) {
-            return biome.getTemperature(pos) + SeasonData.get(provider.resolve().get().getSeason(world)).temperature;
+    public static float getTemperature(IWorldReader reader, Biome biome, BlockPos pos) {
+        World world = reader instanceof WorldGenRegion ? ((WorldGenRegion) reader).getLevel() : reader instanceof World ? (World) reader : null;
+        if (world != null) {
+            LazyOptional<ISeasonsProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+            if (provider.isPresent()) {
+                return biome.getTemperature(pos) + SeasonData.get(provider.resolve().get().getSeason(world)).temperature;
+            }
         }
 
         return biome.getTemperature(pos);
+    }
+
+    public static boolean shouldMelt(World world, BlockPos pos, BlockState state, float temperature, Block block) {
+        if (temperature < 0.15F || state.getBlock() != block) return false;
+        return pos.getY() < 0 || pos.getY() >= 256 || world.getBrightness(LightType.BLOCK, pos) >= 10;
     }
 }

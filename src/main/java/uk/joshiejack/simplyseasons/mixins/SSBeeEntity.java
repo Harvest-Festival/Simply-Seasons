@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 
@@ -21,8 +22,13 @@ public abstract class SSBeeEntity extends AnimalEntity {
     private BeeEntity.PollinateGoal beePollinateGoal;
     @Shadow
     private BeeEntity.FindFlowerGoal goToKnownFlowerGoal;
+
+    @Shadow
+    protected abstract boolean isHiveNearFire();
+
+    @Shadow public abstract void setStayOutOfHiveCountdown(int stayOutOfHiveCountdown);
+
     private Goal findPollinationTargetGoal;
-    private Goal wanderGoal;
 
     protected SSBeeEntity(EntityType<? extends AnimalEntity> type, World world) {
         super(type, world);
@@ -34,12 +40,28 @@ public abstract class SSBeeEntity extends AnimalEntity {
     @Inject(method = "registerGoals", at = @At(value = "TAIL"))
     protected void registerGoals(CallbackInfo ci) {
         findPollinationTargetGoal = this.goalSelector.availableGoals.stream().filter(goal -> goal.getGoal() instanceof BeeEntity.FindPollinationTargetGoal).findFirst().get().getGoal();
-        wanderGoal = this.goalSelector.availableGoals.stream().filter(goal -> goal.getGoal() instanceof BeeEntity.WanderGoal).findFirst().get().getGoal();
+    }
+
+    /**
+     * Forces bees to stay in the hives all throughout the winter!
+     **/
+    @Inject(method = "wantsToEnterHive", at = @At(value = "HEAD"), cancellable = true)
+    protected void wantsToEnterHive(CallbackInfoReturnable<Boolean> cir) {
+        level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
+                .ifPresent(provider -> {
+                    Set<Season> seasons = provider.getSeasonsAt(level, blockPosition());
+                    if (seasons.size() == 1 && seasons.contains(Season.WINTER)) { //If we have more than one season at this location the bee is good
+                        if (!isHiveNearFire()) {
+                            setStayOutOfHiveCountdown(0);
+                            cir.setReturnValue(true);
+                        }
+                    }
+                });
     }
 
     /**
      * Checks the season every 5 seconds
-     *  and removes/adds the goals
+     * and removes/adds the goals
      **/
     @Inject(method = "tick", at = @At(value = "TAIL"))
     protected void updateGoals(CallbackInfo ci) {
@@ -51,12 +73,10 @@ public abstract class SSBeeEntity extends AnimalEntity {
                         this.goalSelector.removeGoal(beePollinateGoal);
                         this.goalSelector.removeGoal(goToKnownFlowerGoal);
                         this.goalSelector.removeGoal(findPollinationTargetGoal);
-                        this.goalSelector.removeGoal(wanderGoal);
                         if (!(seasons.size() == 1 && seasons.contains(Season.WINTER))) {
                             this.goalSelector.addGoal(4, beePollinateGoal);
                             this.goalSelector.addGoal(6, goToKnownFlowerGoal);
                             this.goalSelector.addGoal(7, findPollinationTargetGoal);
-                            this.goalSelector.addGoal(8, wanderGoal);
                         }
                     });
         }

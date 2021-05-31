@@ -5,6 +5,7 @@
   "refmap": "simplyseasons.refmap.json",
   "mixins": [
     "SSBeeEntity",
+    "SSBeeHiveTileEntity",
     "SSBiome",
     "SSCauldronBlock",
     "SSServerWorld",
@@ -13,8 +14,7 @@
   ],
   "client": [
     "client.SSClientWorld",
-    "client.SSWorldRenderer",
-    "client.SSLightTexture"
+    "client.SSWorldRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

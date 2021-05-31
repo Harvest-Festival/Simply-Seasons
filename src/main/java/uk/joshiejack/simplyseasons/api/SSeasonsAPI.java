@@ -15,6 +15,12 @@ public class SSeasonsAPI {
     @CapabilityInject(ISeasonsProvider.class)
     public static final Capability<ISeasonsProvider> SEASONS_CAPABILITY = null;
 
+    /** Each world can have its own weather provider, that determines what weather happens
+     * when. The weather will often be based on the season as well.
+     */
+    @CapabilityInject(IWeatherProvider.class)
+    public static final Capability<IWeatherProvider> WEATHER_CAPABILITY = null;
+
     /**
      *  Register localized season handlers here, ideally these will be checked by the season provider
      *  however it is possible that they won't be. To prevent special functions in certain dimensions.

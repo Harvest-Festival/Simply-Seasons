@@ -13,11 +13,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.IWeatherProvider;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.data.SSDatabase;
 import uk.joshiejack.simplyseasons.data.SSLanguage;
 import uk.joshiejack.simplyseasons.loot.SeasonCheck;
+import uk.joshiejack.simplyseasons.world.season.AbstractSeasonsProvider;
 import uk.joshiejack.simplyseasons.world.season.SeasonsProvider;
+import uk.joshiejack.simplyseasons.world.weather.AbstractWeatherProvider;
+import uk.joshiejack.simplyseasons.world.weather.SeasonalWeatherProvider;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(SimplySeasons.MODID)
@@ -31,7 +35,8 @@ public class SimplySeasons {
     }
 
     private void setup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(ISeasonsProvider.class, new SeasonsProvider.Storage(), () -> new SeasonsProvider(Season.MAIN));
+        CapabilityManager.INSTANCE.register(ISeasonsProvider.class, new AbstractSeasonsProvider.Storage(), () -> new SeasonsProvider(Season.MAIN));
+        CapabilityManager.INSTANCE.register(IWeatherProvider.class, new AbstractWeatherProvider.Storage(), () -> new SeasonalWeatherProvider(240000, 1));
     }
 
     @SubscribeEvent

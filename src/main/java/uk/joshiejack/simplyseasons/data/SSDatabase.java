@@ -67,16 +67,23 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addCropGrowth("not_winter", Blocks.ACACIA_SAPLING);
         addCropGrowth("not_winter", Blocks.DARK_OAK_SAPLING);
         addCropGrowth("jungle", Blocks.BAMBOO_SAPLING);
-        addWeather(Season.SPRING, Weather.CLEAR, 70);
-        addWeather(Season.SPRING, Weather.RAIN, 30);
-        addWeather(Season.SUMMER, Weather.CLEAR, 95);
-        addWeather(Season.SUMMER, Weather.STORM, 3);
-        addWeather(Season.SUMMER, Weather.RAIN, 2);
-        addWeather(Season.AUTUMN, Weather.CLEAR, 55);
-        addWeather(Season.AUTUMN, Weather.RAIN, 45);
-        addWeather(Season.WINTER, Weather.CLEAR, 50);
-        addWeather(Season.WINTER, Weather.STORM, 5);
-        addWeather(Season.WINTER, Weather.RAIN, 45);
+        addSeasonalWeather(Season.SPRING, Weather.CLEAR, 70);
+        addSeasonalWeather(Season.SPRING, Weather.RAIN, 30);
+        addSeasonalWeather(Season.SUMMER, Weather.CLEAR, 95);
+        addSeasonalWeather(Season.SUMMER, Weather.STORM, 3);
+        addSeasonalWeather(Season.SUMMER, Weather.RAIN, 2);
+        addSeasonalWeather(Season.AUTUMN, Weather.CLEAR, 50);
+        addSeasonalWeather(Season.AUTUMN, Weather.RAIN, 40);
+        addSeasonalWeather(Season.AUTUMN, Weather.FOGGY, 10);
+        addSeasonalWeather(Season.WINTER, Weather.RAIN, 50);
+        addSeasonalWeather(Season.WINTER, Weather.CLEAR, 40);
+        addSeasonalWeather(Season.WINTER, Weather.STORM, 5);
+        addSeasonalWeather(Season.WINTER, Weather.FOGGY, 5);
+        addRandomWeather(World.OVERWORLD, Weather.CLEAR, 65);
+        addRandomWeather(World.OVERWORLD, Weather.RAIN, 25);
+        addRandomWeather(World.OVERWORLD, Weather.STORM, 5);
+        addRandomWeather(World.OVERWORLD, Weather.FOGGY, 5);
+        addWeatheredWorld(World.OVERWORLD, "seasonal", 24000, 1);
     }
 
     private void addCropGrowth(String predicate, Block block) {
@@ -97,7 +104,15 @@ public class SSDatabase extends AbstractDatabaseProvider {
                 CSVUtils.join(season.name().toLowerCase(Locale.ROOT), color.getName(), temperature, leaves, grass, sky, sunrise, sunset));
     }
 
-    private void addWeather(Season season, Weather weather, int weight) {
-        addEntry("weather", "Season,Weather,Weight", CSVUtils.join(season.name().toLowerCase(Locale.ROOT), weather.name().toLowerCase(Locale.ROOT), weight));
+    private void addSeasonalWeather(Season season, Weather weather, int weight) {
+        addEntry("seasonal_weather", "Season,Weather,Weight", CSVUtils.join(season.name().toLowerCase(Locale.ROOT), weather.name().toLowerCase(Locale.ROOT), weight));
+    }
+
+    private void addWeatheredWorld(RegistryKey<World> world, String type, int frequency, int chance) {
+        addEntry("weathered_worlds", "World,Type,Frequency,Chance", CSVUtils.join(world.location().toString(), type, frequency, chance));
+    }
+
+    private void addRandomWeather(RegistryKey<World> world, Weather weather, int weight) {
+        addEntry("random_weather", "World,Weather,Weight", CSVUtils.join(world.location().toString(), weather.name().toLowerCase(Locale.ROOT), weight));
     }
 }
