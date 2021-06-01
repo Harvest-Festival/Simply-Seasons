@@ -6,18 +6,15 @@ import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.IWeatherProvider;
 import uk.joshiejack.simplyseasons.api.Season;
-import uk.joshiejack.simplyseasons.client.SSConfig;
+import uk.joshiejack.simplyseasons.api.Weather;
 import uk.joshiejack.simplyseasons.data.SSDatabase;
 import uk.joshiejack.simplyseasons.data.SSLanguage;
 import uk.joshiejack.simplyseasons.loot.SeasonCheck;
@@ -30,17 +27,14 @@ import uk.joshiejack.simplyseasons.world.weather.SeasonalWeatherProvider;
 @Mod(SimplySeasons.MODID)
 public class SimplySeasons {
     public static final String MODID = "simplyseasons";
-    public static final int DAYS_PER_SEASON = 28;
 
     public SimplySeasons() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(this::setup);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SSConfig.create());
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     }
 
     private void setup(FMLCommonSetupEvent event) {
         CapabilityManager.INSTANCE.register(ISeasonsProvider.class, new AbstractSeasonsProvider.Storage(), () -> new SeasonsProvider(Season.MAIN));
-        CapabilityManager.INSTANCE.register(IWeatherProvider.class, new AbstractWeatherProvider.Storage(), () -> new SeasonalWeatherProvider(240000, 1));
+        CapabilityManager.INSTANCE.register(IWeatherProvider.class, new AbstractWeatherProvider.Storage(), () -> new SeasonalWeatherProvider(Weather.CLEAR, 240000, 1));
     }
 
     @SubscribeEvent

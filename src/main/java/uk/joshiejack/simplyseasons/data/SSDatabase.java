@@ -14,7 +14,7 @@ import uk.joshiejack.penguinlib.data.database.CSVUtils;
 import uk.joshiejack.penguinlib.data.generators.AbstractDatabaseProvider;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.Season;
-import uk.joshiejack.simplyseasons.world.weather.Weather;
+import uk.joshiejack.simplyseasons.api.Weather;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -87,7 +87,7 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addRandomWeather(World.OVERWORLD, Weather.RAIN, 25);
         addRandomWeather(World.OVERWORLD, Weather.STORM, 5);
         addRandomWeather(World.OVERWORLD, Weather.FOG, 5);
-        addWeatheredWorld(World.OVERWORLD, "seasonal", 24000, 1);
+        addWeatheredWorld(World.OVERWORLD, "seasonal", Weather.CLEAR, 24000, 1);
     }
 
     private void addCropGrowth(String predicate, Block item) {
@@ -120,8 +120,8 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addEntry("seasonal_weather", "Season,Weather,Weight", CSVUtils.join(season.name().toLowerCase(Locale.ROOT), weather.name().toLowerCase(Locale.ROOT), weight));
     }
 
-    private void addWeatheredWorld(RegistryKey<World> world, String type, int frequency, int chance) {
-        addEntry("weathered_worlds", "World,Type,Frequency,Chance", CSVUtils.join(world.location().toString(), type, frequency, chance));
+    private void addWeatheredWorld(RegistryKey<World> world, String type, Weather weather, int frequency, int chance) {
+        addEntry("weathered_worlds", "World,Type,Default Weather,Frequency,Chance", CSVUtils.join(world.location().toString(), type, weather, frequency, chance));
     }
 
     private void addRandomWeather(RegistryKey<World> world, Weather weather, int weight) {

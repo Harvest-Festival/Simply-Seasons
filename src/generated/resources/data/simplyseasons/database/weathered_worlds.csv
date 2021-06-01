@@ -1,2 +1,2 @@
-World,Type,Frequency,Chance
-minecraft:overworld,seasonal,24000,1
+World,Type,Default Weather,Frequency,Chance
+minecraft:overworld,seasonal,CLEAR,24000,1

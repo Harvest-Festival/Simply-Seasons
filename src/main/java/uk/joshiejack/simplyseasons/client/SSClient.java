@@ -7,7 +7,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import uk.joshiejack.penguinlib.client.gui.HUDRenderer;
 import uk.joshiejack.simplyseasons.SimplySeasons;
@@ -19,6 +21,7 @@ import uk.joshiejack.simplyseasons.client.renderer.SeasonsHUDRender;
 public class SSClient {
     @SubscribeEvent
     public static void onClientLoad(FMLClientSetupEvent event) {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SSConfig.create());
         if (SSConfig.enableHUD.get())
             HUDRenderer.RENDERERS.put(World.OVERWORLD, new SeasonsHUDRender());
     }

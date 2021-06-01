@@ -3,12 +3,12 @@ package uk.joshiejack.simplyseasons.world;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
-import uk.joshiejack.simplyseasons.SimplySeasons;
 
 import javax.annotation.Nonnull;
 import java.time.DayOfWeek;
 
 public class CalendarDate implements INBTSerializable<CompoundNBT> {
+    public static final int DAYS_PER_SEASON = 28;
     private DayOfWeek weekday = DayOfWeek.MONDAY;
     private int monthday = 1;
     private int year = 1;
@@ -62,11 +62,11 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
     }
 
     public static int getYear(long time) {
-        return (int) Math.floor((double) TimeHelper.getElapsedDays(time) / 4 / SimplySeasons.DAYS_PER_SEASON);
+        return (int) Math.floor((double) TimeHelper.getElapsedDays(time) / 4 / DAYS_PER_SEASON);
     }
 
     public static int getDay(long totalTime) {
-        return TimeHelper.getElapsedDays(totalTime) % SimplySeasons.DAYS_PER_SEASON;
+        return TimeHelper.getElapsedDays(totalTime) % DAYS_PER_SEASON;
     }
 
     public boolean isSet() {

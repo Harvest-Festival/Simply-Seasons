@@ -1,7 +1,10 @@
 package uk.joshiejack.simplyseasons.client;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+@OnlyIn(Dist.CLIENT)
 public class SSConfig {
     public static ForgeConfigSpec.BooleanValue enableHUD;
     public static ForgeConfigSpec.BooleanValue enableCropsTooltip;

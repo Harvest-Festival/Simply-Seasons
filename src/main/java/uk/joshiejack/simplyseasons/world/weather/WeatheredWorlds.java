@@ -13,6 +13,7 @@ import uk.joshiejack.penguinlib.util.loot.LootRegistry;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.IWeatherProvider;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.api.Weather;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 
 import javax.annotation.Nullable;
@@ -38,9 +39,9 @@ public class WeatheredWorlds {
             RegistryKey<World> world = RegistryKey.create(Registry.DIMENSION_REGISTRY, row.getRL("world"));
             String type = row.get("type");
             if (type.equals("seasonal"))
-                PROVIDERS.put(world, new SeasonalWeatherProvider(row.getAsInt("frequency"), row.getAsInt("chance")));
+                PROVIDERS.put(world, new SeasonalWeatherProvider(Weather.valueOf(row.get("default weather").toString().toUpperCase(Locale.ENGLISH)), row.getAsInt("frequency"), row.getAsInt("chance")));
             if (type.equals("random"))
-                PROVIDERS.put(world, new RandomWeatherProvider(row.getAsInt("frequency"), row.getAsInt("chance")));
+                PROVIDERS.put(world, new RandomWeatherProvider(Weather.valueOf(row.get("default weather").toString().toUpperCase(Locale.ENGLISH)), row.getAsInt("frequency"), row.getAsInt("chance")));
         });
 
         SEASONAL_WEATHER_MAP.clear();

@@ -35,7 +35,6 @@ public class SereneSeasonsPlugin implements IModPlugin {
     }
 
     private boolean isWhitelisted(RegistryKey<World> world) {
-        //TODO: Reflection instead?
         return SeasonsConfig.isDimensionWhitelisted(world);
     }
 }

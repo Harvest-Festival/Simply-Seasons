@@ -11,7 +11,7 @@ import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.client.SSConfig;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
-import uk.joshiejack.simplyseasons.world.weather.Weather;
+import uk.joshiejack.simplyseasons.api.Weather;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID, value = Dist.CLIENT)

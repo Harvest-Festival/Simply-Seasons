@@ -6,7 +6,7 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import uk.joshiejack.penguinlib.network.PenguinPacket;
 import uk.joshiejack.penguinlib.util.PenguinLoader;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
-import uk.joshiejack.simplyseasons.world.weather.Weather;
+import uk.joshiejack.simplyseasons.api.Weather;
 
 @PenguinLoader.Packet(NetworkDirection.PLAY_TO_CLIENT)
 public class WeatherChangedPacket extends PenguinPacket {

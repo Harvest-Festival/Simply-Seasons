@@ -12,9 +12,9 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.INBTSerializable;
 import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
-import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.world.CalendarDate;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -41,7 +41,7 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
     }
 
     private static float seasonLength(World world) {
-        return (float) (TimeUnitRegistry.get("season_length_multiplier") * SimplySeasons.DAYS_PER_SEASON * serverTypeMultiplier(world));
+        return (float) (TimeUnitRegistry.get("season_length_multiplier") * CalendarDate.DAYS_PER_SEASON * serverTypeMultiplier(world));
     }
 
     @Override

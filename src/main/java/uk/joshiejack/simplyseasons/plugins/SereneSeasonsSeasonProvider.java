@@ -27,11 +27,13 @@ public class SereneSeasonsSeasonProvider extends AbstractSeasonsProvider {
 
     @Override
     public void setSeason(World world, Season season) {
-        //TODO: Reflection instead?
-        SeasonSavedData seasonData = SeasonHandler.getSeasonSavedData(world);
-        seasonData.seasonCycleTicks = SeasonTime.ZERO.getSubSeasonDuration() * (season.ordinal() * 3);
-        seasonData.setDirty();
-        SeasonHandler.sendSeasonUpdate(world);
+        //TODO: Use command code instead
+        try {
+            SeasonSavedData seasonData = SeasonHandler.getSeasonSavedData(world);
+            seasonData.seasonCycleTicks = SeasonTime.ZERO.getSubSeasonDuration() * (season.ordinal() * 3);
+            seasonData.setDirty();
+            SeasonHandler.sendSeasonUpdate(world);
+        } catch (Exception ignored) {}
     }
 
     @Override

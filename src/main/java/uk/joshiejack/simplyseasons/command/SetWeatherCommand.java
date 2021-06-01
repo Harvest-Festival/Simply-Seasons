@@ -10,7 +10,7 @@ import net.minecraftforge.server.command.EnumArgument;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.IWeatherProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
-import uk.joshiejack.simplyseasons.world.weather.Weather;
+import uk.joshiejack.simplyseasons.api.Weather;
 
 import java.util.Locale;
 
