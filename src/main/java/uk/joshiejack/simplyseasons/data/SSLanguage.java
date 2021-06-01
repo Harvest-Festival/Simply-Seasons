@@ -23,10 +23,10 @@ public class SSLanguage extends LanguageProvider {
         add("command.simplyseasons.set_season.autumn", "Set the season to autumn");
         add("command.simplyseasons.set_season.winter", "Set the season to winter");
         add("command.simplyseasons.no_seasons_world", "Seasons are not controlled by Simply Seasons in this world");
-        add("command.simplyseasons.clear", "Set the weather to clear");
-        add("command.simplyseasons.rain", "Set the weather to rain");
-        add("command.simplyseasons.storm", "Set the weather to storm");
-        add("command.simplyseasons.fog", "Set the weather to fog");
+        add("command.simplyseasons.set_weather.clear", "Set the weather to clear");
+        add("command.simplyseasons.set_weather.rain", "Set the weather to rain");
+        add("command.simplyseasons.set_weather.storm", "Set the weather to storm");
+        add("command.simplyseasons.set_weather.fog", "Set the weather to fog");
         add("command.simplyseasons.no_weather_world", "Weather is not controlled by Simply Seasons in this world");
         add("command.simplyseasons.weather.disabled", "Please use the /simplyseasons weather command instead");
     }

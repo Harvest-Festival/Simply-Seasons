@@ -38,7 +38,7 @@ public class FogRenderer {
                 if (isSnow || weather == Weather.FOG) {
                     switch (weather) {
                         case STORM:
-                            fogTarget = SSConfig.fogDensity.get() * 5;
+                            fogTarget = SSConfig.fogDensity.get() * 4;
                             break;
                         case RAIN:
                             fogTarget = SSConfig.fogDensity.get();
