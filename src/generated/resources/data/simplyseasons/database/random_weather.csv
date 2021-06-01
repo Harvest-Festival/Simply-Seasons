@@ -2,4 +2,4 @@ World,Weather,Weight
 minecraft:overworld,clear,65
 minecraft:overworld,rain,25
 minecraft:overworld,storm,5
-minecraft:overworld,foggy,5
+minecraft:overworld,fog,5

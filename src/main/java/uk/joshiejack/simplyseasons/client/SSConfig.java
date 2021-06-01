@@ -5,10 +5,12 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class SSConfig {
     public static ForgeConfigSpec.BooleanValue enableHUD;
     public static ForgeConfigSpec.BooleanValue enableCropsTooltip;
+    public static ForgeConfigSpec.IntValue fogDensity;
 
     SSConfig(ForgeConfigSpec.Builder builder) {
-        enableHUD = builder.define("Enable Season HUD", true);
-        enableCropsTooltip = builder.define("Enable Crops Season Tooltip", true);
+        enableHUD = builder.define("Enable season HUD", true);
+        enableCropsTooltip = builder.define("Enable crops season tooltip", true);
+        fogDensity = builder.defineInRange("Fog/Blizzard density", 30, 0, 100);
     }
 
     public static ForgeConfigSpec create() {

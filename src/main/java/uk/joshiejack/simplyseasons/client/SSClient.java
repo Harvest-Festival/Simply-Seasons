@@ -13,22 +13,10 @@ import uk.joshiejack.penguinlib.client.gui.HUDRenderer;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.client.renderer.SeasonsHUDRender;
-import uk.joshiejack.simplyseasons.world.weather.Weather;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SSClient {
-    public static final SSClient INSTANCE = new SSClient();
-    private Weather weather = Weather.CLEAR;
-
-    public Weather getWeather() {
-        return weather;
-    }
-
-    public void setWeather(Weather weather) {
-        this.weather = weather;
-    }
-
     @SubscribeEvent
     public static void onClientLoad(FMLClientSetupEvent event) {
         if (SSConfig.enableHUD.get())

@@ -51,8 +51,16 @@ public abstract class AbstractWeatherProvider implements IWeatherProvider, INBTS
     @Override
     public void setWeather(World world, Weather weather) {
         this.current = weather;
-        if (!world.isClientSide)
+        if (!world.isClientSide) {
+            ServerWorld sWorld = (ServerWorld) world;
+            if (current == Weather.CLEAR || current == Weather.FOG)
+                sWorld.setWeatherParameters(Integer.MAX_VALUE, 0, false, false);
+            else if (current == Weather.RAIN)
+                sWorld.setWeatherParameters(0, Integer.MAX_VALUE, true, false);
+            else if (current == Weather.STORM)
+                sWorld.setWeatherParameters(0, Integer.MAX_VALUE, true, true);
             PenguinNetwork.sendToDimension(new WeatherChangedPacket(current), world.dimension());
+        }
     }
 
     @Override
@@ -60,12 +68,6 @@ public abstract class AbstractWeatherProvider implements IWeatherProvider, INBTS
         if (world.getDayTime() % updateFrequency == 1 || (changeChance > 1 && world.random.nextInt(changeChance) == 0)) {
             setWeather(world, forecast); //Change the current weather to the forecast one
             forecast = getRandom(world); //Grab a new forecasted weather
-            if (current == Weather.CLEAR || current == Weather.FOGGY)
-                world.setWeatherParameters(Integer.MAX_VALUE, 0, false, false);
-            else if (current == Weather.RAIN)
-                world.setWeatherParameters(0, Integer.MAX_VALUE, true, false);
-            else if (current == Weather.STORM)
-                world.setWeatherParameters(0, Integer.MAX_VALUE, true, true);
         }
     }
 

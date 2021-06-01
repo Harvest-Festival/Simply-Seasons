@@ -40,21 +40,21 @@ public abstract class SSServerWorld extends World {
         BlockPos below = pos.below();
         BlockState state = getBlockState(pos);
         float temperature = SeasonalWorlds.getTemperature(this, getBiome(pos), pos);
-        if (SeasonalWorlds.shouldMelt(this, below, getBlockState(below), temperature, Blocks.ICE))
+        if (SeasonalWorlds.shouldMelt(getBlockState(below), temperature, Blocks.ICE))
             setBlockAndUpdate(below, Blocks.WATER.defaultBlockState());
-        else if (SeasonalWorlds.shouldMelt(this, pos, state, temperature, Blocks.SNOW)) {
-            if (state.getValue(SnowBlock.LAYERS) > 1)
+        else if (SeasonalWorlds.shouldMelt(getBlockState(pos), temperature, Blocks.SNOW)) {
+            if (state.getValue(SnowBlock.LAYERS) > 1) {
                 setBlockAndUpdate(pos, state.setValue(SnowBlock.LAYERS, state.getValue(SnowBlock.LAYERS) - 1));
-            else {
+            } else {
                 setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 if (random.nextFloat() <= 0.05F) { //Chance in spring for flowers/grass to grow
                     getCapability(SSeasonsAPI.SEASONS_CAPABILITY).ifPresent(provider -> {
                         if (provider.getSeason(this) == Season.SPRING) {
-                            BlockState blockstate = getBlockState(below);
-                            if (blockstate.getBlock() instanceof GrassBlock) {
-                                IGrowable igrowable = (IGrowable) blockstate.getBlock();
-                                if (igrowable.isValidBonemealTarget(this, below, blockstate, false))
-                                    igrowable.performBonemeal((ServerWorld) (Object) this, random, below, blockstate);
+                            BlockState belowState = getBlockState(below);
+                            if (belowState.getBlock() instanceof GrassBlock) {
+                                IGrowable igrowable = (IGrowable) belowState.getBlock();
+                                if (igrowable.isValidBonemealTarget(this, below, belowState, false))
+                                    igrowable.performBonemeal((ServerWorld) (Object) this, random, below, belowState);
                             }
                         }
                     });

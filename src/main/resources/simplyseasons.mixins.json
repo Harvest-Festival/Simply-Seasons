@@ -10,6 +10,7 @@
     "SSCauldronBlock",
     "SSServerWorld",
     "SSSnowGolemEntity",
+    "SSWeatherCommand",
     "SSWorld"
   ],
   "client": [

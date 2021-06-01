@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.WorldGenRegion;
@@ -62,8 +61,7 @@ public class SeasonalWorlds {
         return biome.getTemperature(pos);
     }
 
-    public static boolean shouldMelt(World world, BlockPos pos, BlockState state, float temperature, Block block) {
-        if (temperature < 0.15F || state.getBlock() != block) return false;
-        return pos.getY() < 0 || pos.getY() >= 256 || world.getBrightness(LightType.BLOCK, pos) >= 10;
+    public static boolean shouldMelt(BlockState state, float temperature, Block block) {
+        return temperature >= 0.15F && state.getBlock() == block;
     }
 }

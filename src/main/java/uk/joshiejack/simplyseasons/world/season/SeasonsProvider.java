@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.INBTSerializable;
 import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
@@ -39,11 +40,14 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
         return world.getServer() instanceof DedicatedServer ? 10 : 1;
     }
 
+    private static float seasonLength(World world) {
+        return (float) (TimeUnitRegistry.get("season_length_multiplier") * SimplySeasons.DAYS_PER_SEASON * serverTypeMultiplier(world));
+    }
+
     @Override
     public void recalculate(World world) {
         long time = world.getDayTime();
-        season = seasons[Math.max(0, (int) Math.floor(((float) TimeHelper.getElapsedDays(time) /
-                (float) (TimeUnitRegistry.get("season_length_multiplier") * SimplySeasons.DAYS_PER_SEASON * serverTypeMultiplier(world))) % length))];
+        season = seasons[Math.max(0, (int) Math.floor(((float) TimeHelper.getElapsedDays(time) / seasonLength(world)) % length))];
         super.recalculate(world); //call the super to perform updates
     }
 
@@ -57,8 +61,31 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
         if (world.isClientSide)
             this.season = season;
         else {
+            ServerWorld sWorld = (ServerWorld) world;
             if (this.season.ordinal() == season.ordinal()) return;
-            //TODO: Set the season
+            long length = (long) (seasonLength(world) * 24000L);
+            switch (this.season) {
+                case SPRING:
+                    sWorld.setDayTime(sWorld.getDayTime() + length * season.ordinal());
+                    break;
+                case SUMMER:
+                    if (season == Season.SPRING)
+                        sWorld.setDayTime(sWorld.getDayTime() + length * 3);
+                    else
+                        sWorld.setDayTime(sWorld.getDayTime() + length * (season.ordinal() - 1));
+                    break;
+                case AUTUMN:
+                    if (season == Season.WINTER)
+                        sWorld.setDayTime(sWorld.getDayTime() + length);
+                    else
+                        sWorld.setDayTime(sWorld.getDayTime() + length * (season.ordinal() + 2));
+                    break;
+                case WINTER:
+                    sWorld.setDayTime(sWorld.getDayTime() + length * (season.ordinal() + 1));
+                    break;
+            }
+
+            recalculate(world);
         }
     }
 
