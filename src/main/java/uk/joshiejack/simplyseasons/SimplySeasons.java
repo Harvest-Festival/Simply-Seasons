@@ -8,13 +8,16 @@ import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.IWeatherProvider;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.client.SSConfig;
 import uk.joshiejack.simplyseasons.data.SSDatabase;
 import uk.joshiejack.simplyseasons.data.SSLanguage;
 import uk.joshiejack.simplyseasons.loot.SeasonCheck;
@@ -32,6 +35,7 @@ public class SimplySeasons {
     public SimplySeasons() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::setup);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SSConfig.create());
     }
 
     private void setup(FMLCommonSetupEvent event) {

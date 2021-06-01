@@ -1,7 +1,6 @@
 package uk.joshiejack.simplyseasons.loot;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -20,31 +19,34 @@ import uk.joshiejack.simplyseasons.api.Season;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonPredicate {
-    public static final SeasonPredicate ANY = new SeasonPredicate(Sets.newEnumSet(Sets.newHashSet(Season.values()), Season.class));
+    public static final SeasonPredicate ANY = new SeasonPredicate(new ArrayList<>());
     public static final Map<String, SeasonPredicate> REGISTRY = Maps.newHashMap();
-    private final EnumSet<Season> seasons;
+    private final List<Season> seasons;
 
-    public SeasonPredicate(@Nonnull EnumSet<Season> seasons) {
+    public SeasonPredicate(@Nonnull List<Season> seasons) {
         this.seasons = seasons;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST) //Many other things use these predicates, so make sure they're loaded
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    //Many other things use these predicates, so make sure they're loaded
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
         REGISTRY.clear(); //Reloading, so clear the map
         event.table("season_predicates").rows().forEach(row -> {
             String name = row.name();
             Season season = Season.valueOf(row.get("season").toString().toUpperCase(Locale.ENGLISH));
             if (!SeasonPredicate.REGISTRY.containsKey(name))
-                SeasonPredicate.REGISTRY.put(name, new SeasonPredicate(EnumSet.noneOf(Season.class)));
+                SeasonPredicate.REGISTRY.put(name, new SeasonPredicate(new ArrayList<>()));
             SeasonPredicate.REGISTRY.get(name).seasons.add(season); //Add the new seasons
         });
+    }
+
+    public Stream<Season> seasons() {
+        return seasons.stream();
     }
 
     public boolean matches(ServerWorld world, BlockPos pos) {
@@ -80,7 +82,7 @@ public class SeasonPredicate {
         if (json != null && !json.isJsonNull()) {
             if (json.getAsJsonObject().has("seasons")) {
                 Iterator<JsonElement> it = json.getAsJsonObject().getAsJsonArray("seasons").iterator();
-                EnumSet<Season> set = EnumSet.noneOf(Season.class);
+                List<Season> set = new ArrayList<>();
                 while (it.hasNext()) {
                     set.add(Season.valueOf(it.next().getAsString().toUpperCase(Locale.ROOT)));
                 }
@@ -93,7 +95,7 @@ public class SeasonPredicate {
     }
 
     public static class Builder {
-        private EnumSet<Season> seasons = EnumSet.noneOf(Season.class);
+        private List<Season> seasons = new ArrayList<>();
 
         public static Builder season() {
             return new Builder();

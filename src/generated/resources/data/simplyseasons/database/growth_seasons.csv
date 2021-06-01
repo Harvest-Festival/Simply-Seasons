@@ -1,15 +1,15 @@
-Block,Season Predicate
-minecraft:wheat,not_winter
-minecraft:carrots,autumn
-minecraft:potatoes,spring
-minecraft:beetroots,autumn
-minecraft:melon_stem,late
-minecraft:pumpkin_stem,late
-minecraft:cocoa,jungle
+Item/Block,Season Predicate
+minecraft:wheat_seeds,not_winter
+minecraft:carrot,autumn
+minecraft:potato,spring
+minecraft:beetroot_seeds,autumn
+minecraft:melon_seeds,late
+minecraft:pumpkin_seeds,late
+minecraft:cocoa_beans,jungle
 minecraft:sugar_cane,jungle
 minecraft:bamboo,jungle
 minecraft:cactus,desert
-minecraft:sweet_berry_bush,late
+minecraft:sweet_berries,late
 minecraft:oak_sapling,not_winter
 minecraft:spruce_sapling,not_winter
 minecraft:birch_sapling,not_winter

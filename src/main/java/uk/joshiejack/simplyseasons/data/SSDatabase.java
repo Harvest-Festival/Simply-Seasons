@@ -4,7 +4,10 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import uk.joshiejack.penguinlib.data.database.CSVUtils;
@@ -49,23 +52,24 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addSeasonPredicate("all_year", Season.SUMMER);
         addSeasonPredicate("all_year", Season.AUTUMN);
         addSeasonPredicate("all_year", Season.WINTER);
-        addCropGrowth("not_winter", Blocks.WHEAT);
-        addCropGrowth("autumn", Blocks.CARROTS);
-        addCropGrowth("spring", Blocks.POTATOES);
-        addCropGrowth("autumn", Blocks.BEETROOTS);
-        addCropGrowth("late", Blocks.MELON_STEM);
-        addCropGrowth("late", Blocks.PUMPKIN_STEM);
-        addCropGrowth("jungle", Blocks.COCOA);
-        addCropGrowth("jungle", Blocks.SUGAR_CANE);
-        addCropGrowth("jungle", Blocks.BAMBOO);
-        addCropGrowth("desert", Blocks.CACTUS);
-        addCropGrowth("late", Blocks.SWEET_BERRY_BUSH);
-        addCropGrowth("not_winter", Blocks.OAK_SAPLING);
-        addCropGrowth("not_winter", Blocks.SPRUCE_SAPLING);
-        addCropGrowth("not_winter", Blocks.BIRCH_SAPLING);
-        addCropGrowth("jungle", Blocks.JUNGLE_SAPLING);
-        addCropGrowth("not_winter", Blocks.ACACIA_SAPLING);
-        addCropGrowth("not_winter", Blocks.DARK_OAK_SAPLING);
+        addCropGrowth("not_winter", Items.WHEAT_SEEDS);
+        addCropGrowth("autumn", Items.CARROT);
+        addCropGrowth("spring", Items.POTATO);
+        addCropGrowth("autumn", Items.BEETROOT_SEEDS);
+        addCropGrowth("late", Items.MELON_SEEDS);
+        addCropGrowth("late", Items.PUMPKIN_SEEDS);
+        addCropGrowth("jungle", Items.COCOA_BEANS);
+        addCropGrowth("jungle", Items.SUGAR_CANE);
+        addCropGrowth("jungle", Items.BAMBOO);
+        addCropGrowth("desert", Items.CACTUS);
+        addCropGrowth("late", Items.SWEET_BERRIES);
+        addCropGrowth("not_winter", Items.OAK_SAPLING);
+        addCropGrowth("not_winter", Items.SPRUCE_SAPLING);
+        addCropGrowth("not_winter", Items.BIRCH_SAPLING);
+        addCropGrowth("jungle", Items.JUNGLE_SAPLING);
+        addCropGrowth("not_winter", Items.ACACIA_SAPLING);
+        addCropGrowth("not_winter", Items.DARK_OAK_SAPLING);
+        addCropGrowth("jungle", Items.BAMBOO);
         addCropGrowth("jungle", Blocks.BAMBOO_SAPLING);
         addSeasonalWeather(Season.SPRING, Weather.CLEAR, 70);
         addSeasonalWeather(Season.SPRING, Weather.RAIN, 30);
@@ -86,8 +90,16 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addWeatheredWorld(World.OVERWORLD, "seasonal", 24000, 1);
     }
 
-    private void addCropGrowth(String predicate, Block block) {
-        addEntry("growth_seasons", "Block,Season Predicate", CSVUtils.join(Objects.requireNonNull(block.getRegistryName()).toString(), predicate));
+    private void addCropGrowth(String predicate, Block item) {
+        addCropGrowth(predicate, item.getRegistryName());
+    }
+
+    private void addCropGrowth(String predicate, Item item) {
+        addCropGrowth(predicate, item.getRegistryName());
+    }
+
+    private void addCropGrowth(String predicate, ResourceLocation item) {
+        addEntry("growth_seasons", "Item/Block,Season Predicate", CSVUtils.join(Objects.requireNonNull(item).toString(), predicate));
     }
 
     private void addSeasonPredicate(String name, Season season) {

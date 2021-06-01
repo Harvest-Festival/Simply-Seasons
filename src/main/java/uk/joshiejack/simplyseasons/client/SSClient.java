@@ -31,7 +31,8 @@ public class SSClient {
 
     @SubscribeEvent
     public static void onClientLoad(FMLClientSetupEvent event) {
-        HUDRenderer.RENDERERS.put(World.OVERWORLD, new SeasonsHUDRender());
+        if (SSConfig.enableHUD.get())
+            HUDRenderer.RENDERERS.put(World.OVERWORLD, new SeasonsHUDRender());
     }
 
     @OnlyIn(Dist.CLIENT)

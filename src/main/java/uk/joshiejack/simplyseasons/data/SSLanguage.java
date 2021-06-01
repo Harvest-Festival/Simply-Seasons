@@ -16,5 +16,7 @@ public class SSLanguage extends LanguageProvider {
         add("simplyseasons.summer", "Summer");
         add("simplyseasons.autumn", "Autumn");
         add("simplyseasons.winter", "Winter");
+        add("simplyseasons.wet", "Wet Season");
+        add("simplyseasons.dry", "Dry Season");
     }
 }

@@ -14,6 +14,7 @@ import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.client.SSConfig;
 import uk.joshiejack.simplyseasons.world.CalendarDate;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 
@@ -46,11 +47,16 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     }
 
     @Override
+    public boolean isEnabled() {
+        return SSConfig.enableHUD.get();
+    }
+
+    @Override
     public ResourceLocation getTexture(Minecraft mc) {
         return HUD.get(getSeason(mc.level));
     }
 
-    public TranslationTextComponent getName(Season season) {
+    public static TranslationTextComponent getName(Season season) {
         return StringHelper.localize(SimplySeasons.MODID + "." + season.name().toLowerCase(Locale.ROOT));
     }
 

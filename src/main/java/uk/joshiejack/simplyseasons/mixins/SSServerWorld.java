@@ -60,12 +60,14 @@ public abstract class SSServerWorld extends World {
                     });
                 }
             }
-        } else if (SeasonalWorlds.getTemperature(this, getBiome(pos), pos) < 0.15F && state.getBlock() == Blocks.SNOW &&
+        } else if (SeasonalWorlds.getTemperature(this, getBiome(pos), pos) < 0.15F &&
                 pos.getY() >= 0 && pos.getY() < 256 && this.getBrightness(LightType.BLOCK, pos) < 10) {
             getCapability(SSeasonsAPI.WEATHER_CAPABILITY).ifPresent(provider -> {
                 if (provider.getWeather(this) == Weather.STORM) {
-                    if (state.getValue(SnowBlock.LAYERS) != 8)
+                    if (state.getBlock() == Blocks.SNOW && state.getValue(SnowBlock.LAYERS) != 8)
                         setBlockAndUpdate(pos, state.setValue(SnowBlock.LAYERS, state.getValue(SnowBlock.LAYERS) + 1));
+                    else if (getBiome(pos).shouldSnow(this, pos)) //Add snow at twice the pace in blizzards
+                        setBlockAndUpdate(pos, Blocks.SNOW.defaultBlockState());
                 }
             });
         }

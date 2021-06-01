@@ -1,7 +1,9 @@
 {
   "simplyseasons.autumn": "Autumn",
+  "simplyseasons.dry": "Dry Season",
   "simplyseasons.hud": "%1$s %2$s",
   "simplyseasons.spring": "Spring",
   "simplyseasons.summer": "Summer",
+  "simplyseasons.wet": "Wet Season",
   "simplyseasons.winter": "Winter"
 }

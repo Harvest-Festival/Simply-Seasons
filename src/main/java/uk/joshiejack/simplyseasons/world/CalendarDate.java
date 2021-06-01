@@ -61,10 +61,6 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
         year = tag.getShort("Year");
     }
 
-    public static CalendarDate getFromTime(long time) {
-        return new CalendarDate(TimeHelper.getWeekday(time), 1 + getDay(time), 1 + getYear(time));
-    }
-
     public static int getYear(long time) {
         return (int) Math.floor((double) TimeHelper.getElapsedDays(time) / 4 / SimplySeasons.DAYS_PER_SEASON);
     }
