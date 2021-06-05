@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import uk.joshiejack.penguinlib.client.gui.HUDRenderer;
 import uk.joshiejack.penguinlib.util.helpers.generic.StringHelper;
 import uk.joshiejack.simplyseasons.SimplySeasons;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.SSConfig;
@@ -40,7 +40,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
 
     @Nullable
     private static Season getSeason(World world) {
-        LazyOptional<ISeasonsProvider> seasonsProvider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        LazyOptional<ISeasonProvider> seasonsProvider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         if (seasonsProvider.isPresent()) {
             return seasonsProvider.resolve().get().getSeason(world);
         } else return null;

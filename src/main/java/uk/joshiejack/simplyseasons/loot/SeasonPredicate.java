@@ -13,7 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import uk.joshiejack.penguinlib.events.DatabaseLoadedEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 
@@ -56,7 +56,7 @@ public class SeasonPredicate {
     @SuppressWarnings("ConstantConditions")
     public boolean matches(ServerWorld world, double x, double y, double z) {
         BlockPos blockpos = new BlockPos(x, y, z);
-        LazyOptional<ISeasonsProvider> seasonsProvider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        LazyOptional<ISeasonProvider> seasonsProvider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         return seasonsProvider.isPresent() && seasonsProvider.resolve().get().getSeasonsAt(world, blockpos).stream()
                 .anyMatch(season -> seasons.stream()
                         .anyMatch(s2 -> s2 == season));

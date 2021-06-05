@@ -12,8 +12,8 @@ public class SSeasonsAPI {
      * you can have an all winter dimension, or all summer etc. These are world capabilities.
      * Not all worlds will have seasons, such as the nether and end in vanilla.
      */
-    @CapabilityInject(ISeasonsProvider.class)
-    public static final Capability<ISeasonsProvider> SEASONS_CAPABILITY = null;
+    @CapabilityInject(ISeasonProvider.class)
+    public static final Capability<ISeasonProvider> SEASONS_CAPABILITY = null;
 
     /**
      * Each world can have its own weather provider, that determines what weather happens

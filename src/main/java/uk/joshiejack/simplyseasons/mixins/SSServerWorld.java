@@ -16,14 +16,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.api.Weather;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 import uk.joshiejack.simplyseasons.world.CalendarDate;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
-import uk.joshiejack.simplyseasons.api.Weather;
 
 import java.util.function.Supplier;
 
@@ -39,7 +39,7 @@ public abstract class SSServerWorld extends World {
     @Inject(method = "tickChunk", at = @At(value = "INVOKE", target = "Ljava/util/Random;nextInt(I)I", ordinal = 1), cancellable = true)
     public void shouldMeltOrGrow(Chunk chunk, int ticks, CallbackInfo ci) {
         if (BetterWeatherPlugin.loaded || SereneSeasonsPlugin.loaded) return;
-        LazyOptional<ISeasonsProvider> provider = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        LazyOptional<ISeasonProvider> provider = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         if (!provider.isPresent()) return; //If seasons are irrelevant to this world
         Season season = provider.resolve().get().getSeason(this);
         int i = chunk.getPos().getMinBlockX();
@@ -61,15 +61,14 @@ public abstract class SSServerWorld extends World {
                         setBlockAndUpdate(pos, state.setValue(SnowBlock.LAYERS, state.getValue(SnowBlock.LAYERS) - 1));
                     } else {
                         setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-                        if (random.nextFloat() <= 0.05F) { //Chance in spring for flowers/grass to grow
-                            if (season == Season.SPRING) {
-                                BlockState belowState = getBlockState(below);
-                                if (belowState.getBlock() instanceof GrassBlock) {
-                                    IGrowable igrowable = (IGrowable) belowState.getBlock();
-                                    if (igrowable.isValidBonemealTarget(this, below, belowState, false))
-                                        igrowable.performBonemeal((ServerWorld) (Object) this, random, below, belowState);
-                                }
-                            }
+                        if (season == Season.SPRING) {
+                            BlockState belowState = getBlockState(below);
+                            if (random.nextFloat() <= 0.05F && belowState.getBlock() instanceof GrassBlock) {
+                                IGrowable igrowable = (IGrowable) belowState.getBlock();
+                                if (igrowable.isValidBonemealTarget(this, below, belowState, false))
+                                    igrowable.performBonemeal((ServerWorld) (Object) this, random, below, belowState);
+                            } else if (random.nextFloat() <= 0.2F && belowState.getBlock() == Blocks.DIRT)
+                                setBlockAndUpdate(below, getBiome(below).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial());
                         }
                     }
                 }

@@ -14,7 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
@@ -49,7 +49,7 @@ public class SeasonalColorBlender {
         if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded) return; //They can handle this
         colors.getBlockColors().register((state, reader, pos, color) -> {
             World world = Minecraft.getInstance().level;
-            LazyOptional<ISeasonsProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+            LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (optional.isPresent()) {
                 SeasonData data = SeasonData.get(optional.resolve().get().getSeason(world));
                 return getBlendedColor(FoliageColors.getBirchColor(), data.leaves, 2);
@@ -67,7 +67,7 @@ public class SeasonalColorBlender {
         BiomeColors.GRASS_COLOR_RESOLVER = (biome, x, z) -> {
             World world = Minecraft.getInstance().level;
             int original = grass.getColor(biome, x, z);
-            LazyOptional<ISeasonsProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+            LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (optional.isPresent()) {
                 SeasonData data = SeasonData.get(optional.resolve().get().getSeason(world));
                 return getBlendedColor(original, data.grass, 2);
@@ -77,7 +77,7 @@ public class SeasonalColorBlender {
         BiomeColors.FOLIAGE_COLOR_RESOLVER = (biome, x, z) -> {
             World world = Minecraft.getInstance().level;
             int original = foliage.getColor(biome, x, z);
-            LazyOptional<ISeasonsProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+            LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (optional.isPresent()) {
                 Season season = optional.resolve().get().getSeason(world);
                 SeasonData data = SeasonData.get(season);

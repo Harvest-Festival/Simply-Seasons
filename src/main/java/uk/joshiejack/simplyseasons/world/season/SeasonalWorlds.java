@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import uk.joshiejack.penguinlib.data.database.CSVUtils;
 import uk.joshiejack.penguinlib.events.DatabaseLoadedEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonalWorlds {
-    private static final Map<RegistryKey<World>, ISeasonsProvider> PROVIDERS = new HashMap<>();
+    private static final Map<RegistryKey<World>, ISeasonProvider> PROVIDERS = new HashMap<>();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onAttachCapability(AttachCapabilitiesEvent<World> event) {
@@ -40,19 +40,22 @@ public class SeasonalWorlds {
 
     @SubscribeEvent
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
-        if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded) return; //They will handle which worlds have seasons
+        if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded)
+            return; //They will handle which worlds have seasons
         PROVIDERS.clear(); //Clear out the existing providers, as we're reloading
         event.table("seasonal_worlds").rows().forEach(row -> {
             RegistryKey<World> world = RegistryKey.create(Registry.DIMENSION_REGISTRY, row.getRL("world"));
             PROVIDERS.put(world, new SeasonsProvider(CSVUtils.parse(row.get("seasons")).stream()
-                    .map(string -> Season.valueOf(string.toUpperCase(Locale.ROOT))).toArray(Season[]::new)));
+                    .map(string -> Season.valueOf(string.toUpperCase(Locale.ROOT)))
+                    .filter(season -> season != Season.WET && season != Season.DRY)
+                    .toArray(Season[]::new)));
         });
     }
 
     public static float getTemperature(IWorldReader reader, Biome biome, BlockPos pos) {
         World world = reader instanceof WorldGenRegion ? ((WorldGenRegion) reader).getLevel() : reader instanceof World ? (World) reader : null;
         if (world != null) {
-            LazyOptional<ISeasonsProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+            LazyOptional<ISeasonProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (provider.isPresent()) {
                 return biome.getTemperature(pos) + SeasonData.get(provider.resolve().get().getSeason(world)).temperature;
             }

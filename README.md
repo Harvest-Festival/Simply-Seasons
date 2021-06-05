@@ -1,6 +1,6 @@
 ![](src/main/resources/assets/harvestfestival/logo.png)
 
-Simply Seasons is the season element of Harvest Festival stripped out in to its own mod. It adds seasons, blizzards and fog. The mod is compatible with Serene Seasons or Better Weather. You'll still get the parts of this mod like the HUD or varying day length based on season. But the other mod will control the seasons/colours etc or the weather where applicable.
+Simply Seasons is the season element of Harvest Festival stripped out in to its own mod. It adds seasons, blizzards and fog. The mod is compatible with Serene Seasons or Better Weather. You'll still get the parts of this mod like the HUD, seasonal music option or varying day length based on season. But the other mod will control the seasons/colours etc or the weather where applicable.
 
 More information about Simply Seasons and downloads can be found on //TODO
 

@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Weather;
 
@@ -17,7 +17,7 @@ public class SeasonalWeatherProvider extends AbstractWeatherProvider implements 
 
     @Override
     protected Weather getRandom(@Nullable World world) {
-        LazyOptional<ISeasonsProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        LazyOptional<ISeasonProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         if (provider.isPresent())
             return WeatheredWorlds.getRandomWeatherForSeason(provider.resolve().get().getSeason(world), world.random);
         else

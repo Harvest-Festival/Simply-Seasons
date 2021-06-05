@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
@@ -27,7 +27,7 @@ public abstract class SSWorld implements IWorld, AutoCloseable, IForgeWorld {
      * @author joshiejack
      */
     public float getTimeOfDay(float partialTicks) {
-        LazyOptional<ISeasonsProvider> optional = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        LazyOptional<ISeasonProvider> optional = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         if (optional.isPresent()) {
             SeasonData data = SeasonData.get(optional.resolve().get().getSeason(asWorld()));
             long time = TimeHelper.getTimeOfDay(asWorld().getDayTime());

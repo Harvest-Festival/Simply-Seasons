@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import uk.joshiejack.penguinlib.network.PenguinNetwork;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.network.DateChangedPacket;
@@ -18,7 +18,7 @@ import uk.joshiejack.simplyseasons.network.SeasonChangedPacket;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractSeasonsProvider implements ISeasonsProvider {
+public abstract class AbstractSeasonsProvider implements ISeasonProvider {
     private final LazyOptional<AbstractSeasonsProvider> capability;
 
     public AbstractSeasonsProvider() {
@@ -50,16 +50,16 @@ public abstract class AbstractSeasonsProvider implements ISeasonsProvider {
 
     //Stay down here out of my way!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @SuppressWarnings("rawtypes, unchecked")
-    public static class Storage implements Capability.IStorage<ISeasonsProvider> {
+    public static class Storage implements Capability.IStorage<ISeasonProvider> {
         @Override
-        public void readNBT(Capability<ISeasonsProvider> capability, ISeasonsProvider instance, Direction side, INBT nbt) {
+        public void readNBT(Capability<ISeasonProvider> capability, ISeasonProvider instance, Direction side, INBT nbt) {
             if (instance instanceof INBTSerializable)
                 ((INBTSerializable) instance).deserializeNBT(nbt);
         }
 
         @Nullable
         @Override
-        public INBT writeNBT(Capability<ISeasonsProvider> capability, ISeasonsProvider instance, Direction side) {
+        public INBT writeNBT(Capability<ISeasonProvider> capability, ISeasonProvider instance, Direction side) {
             return instance instanceof INBTSerializable ? ((INBTSerializable)instance).serializeNBT() : new CompoundNBT();
         }
     }

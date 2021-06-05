@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import uk.joshiejack.simplyseasons.api.ISeasonsProvider;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.renderer.SeasonalColorBlender;
@@ -38,7 +38,7 @@ public abstract class SSClientWorld extends World {
         float f = this.getTimeOfDay(p_228330_1_);
         float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.25F);
         f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
-        LazyOptional<ISeasonsProvider> optional = this.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        LazyOptional<ISeasonProvider> optional = this.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         if (optional.isPresent() && optional.resolve().get().getSeason(this) == Season.WINTER) {
             return f1 * f1 * 0.5F * 1.25F;
         } else return f1 * f1 * 0.5F;
@@ -51,7 +51,7 @@ public abstract class SSClientWorld extends World {
      */
     @Redirect(method = "getSkyColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/Biome;getSkyColor()I"))
     public int getSkyColor(Biome biome) {
-        LazyOptional<ISeasonsProvider> provider = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        LazyOptional<ISeasonProvider> provider = getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         return provider.isPresent() ? SeasonalColorBlender.getBlendedColor(biome.getSkyColor(),
                 SeasonData.get(provider.resolve().get().getSeason(this)).sky, 10) : biome.getSkyColor();
     }

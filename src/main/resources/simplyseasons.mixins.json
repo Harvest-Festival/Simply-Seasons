@@ -8,6 +8,7 @@
     "SSBeeHiveTileEntity",
     "SSBiome",
     "SSCauldronBlock",
+    "SSMusicTicker",
     "SSServerWorld",
     "SSSnowGolemEntity",
     "SSWeatherCommand",
