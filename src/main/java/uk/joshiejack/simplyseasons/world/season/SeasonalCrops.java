@@ -23,6 +23,7 @@ import uk.joshiejack.penguinlib.events.DatabaseLoadedEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.loot.SeasonPredicate;
 import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
+import uk.joshiejack.simplyseasons.world.SSServerConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class SeasonalCrops {
 
     @SubscribeEvent
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
-        if (SereneSeasonsPlugin.loaded) return; //let them handle this
+        if (SereneSeasonsPlugin.loaded & !SSServerConfig.useSSCropsHandler.get()) return; //let them handle this
         REGISTRY.clear(); //Reloading
         event.table("growth_seasons").rows().forEach(row -> {
             ResourceLocation registry = row.getRL("item/block");

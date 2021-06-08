@@ -28,6 +28,7 @@ import uk.joshiejack.simplyseasons.data.SSBlockTags;
 import uk.joshiejack.simplyseasons.data.SSDatabase;
 import uk.joshiejack.simplyseasons.data.SSLanguage;
 import uk.joshiejack.simplyseasons.loot.SeasonCheck;
+import uk.joshiejack.simplyseasons.world.SSServerConfig;
 import uk.joshiejack.simplyseasons.world.season.AbstractSeasonsProvider;
 import uk.joshiejack.simplyseasons.world.season.SeasonalCrops;
 import uk.joshiejack.simplyseasons.world.season.SeasonsProvider;
@@ -48,6 +49,7 @@ public class SimplySeasons {
         ModLoadingContext ctx = ModLoadingContext.get();
         ctx.registerConfig(ModConfig.Type.COMMON, SSConfig.create());
         ctx.registerConfig(ModConfig.Type.CLIENT, SSClientConfig.create());
+        ctx.registerConfig(ModConfig.Type.SERVER, SSServerConfig.create());
     }
 
     private void setup(FMLCommonSetupEvent event) {
