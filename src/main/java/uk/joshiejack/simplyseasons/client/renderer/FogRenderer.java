@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
-import uk.joshiejack.simplyseasons.client.SSConfig;
+import uk.joshiejack.simplyseasons.client.SSClientConfig;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 import uk.joshiejack.simplyseasons.api.Weather;
@@ -21,7 +21,7 @@ public class FogRenderer {
 
     @SubscribeEvent
     public static void onFogDensity(EntityViewRenderEvent.FogDensity event) {
-        if (BetterWeatherPlugin.loaded || SSConfig.fogDensity.get() <= 0) return;
+        if (BetterWeatherPlugin.loaded || SSClientConfig.fogDensity.get() <= 0) return;
         Minecraft mc = Minecraft.getInstance();
         mc.level.getCapability(SSeasonsAPI.WEATHER_CAPABILITY).ifPresent(provider -> {
             if (!event.getInfo().getBlockAtCamera().getMaterial().isLiquid()) {
@@ -38,13 +38,13 @@ public class FogRenderer {
                 if (isSnow || weather == Weather.FOG) {
                     switch (weather) {
                         case STORM:
-                            fogTarget = SSConfig.fogDensity.get() * 4;
+                            fogTarget = SSClientConfig.fogDensity.get() * 4;
                             break;
                         case RAIN:
-                            fogTarget = SSConfig.fogDensity.get();
+                            fogTarget = SSClientConfig.fogDensity.get();
                             break;
                         default:
-                            fogTarget = SSConfig.fogDensity.get() * 2;
+                            fogTarget = SSClientConfig.fogDensity.get() * 2;
                             break;
                     }
                 } else fogTarget = 0;

@@ -12,14 +12,14 @@ import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.SSClient;
-import uk.joshiejack.simplyseasons.client.SSConfig;
+import uk.joshiejack.simplyseasons.client.SSClientConfig;
 
 @Mixin(MusicTicker.class)
 public class SSMusicTicker {
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getSituationalMusic()Lnet/minecraft/client/audio/BackgroundMusicSelector;"))
     public BackgroundMusicSelector addSeasonalMusic(Minecraft minecraft) {
         BackgroundMusicSelector music = minecraft.getSituationalMusic();
-        if (music == BackgroundMusicTracks.GAME && SSConfig.seasonalMusic.get()) {
+        if (music == BackgroundMusicTracks.GAME && SSClientConfig.seasonalMusic.get()) {
             LazyOptional<ISeasonProvider> provider = minecraft.level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
             if (provider.isPresent()) {
                 Season season = provider.resolve().get().getSeason(minecraft.level);

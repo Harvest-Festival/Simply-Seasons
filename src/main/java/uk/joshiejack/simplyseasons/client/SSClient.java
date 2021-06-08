@@ -27,7 +27,7 @@ public class SSClient {
 
     @SubscribeEvent
     public static void onClientLoad(FMLClientSetupEvent event) {
-        if (SSConfig.enableHUD.get())
+        if (SSClientConfig.enableHUD.get())
             HUDRenderer.RENDERERS.put(World.OVERWORLD, new SeasonsHUDRender());
         SEASON_TO_MUSIC.put(Season.SPRING, BackgroundMusicTracks.createGameMusic(SimplySeasons.SSSounds.SPRING.get()));
         SEASON_TO_MUSIC.put(Season.SUMMER, BackgroundMusicTracks.createGameMusic(SimplySeasons.SSSounds.SUMMER.get()));
@@ -48,4 +48,5 @@ public class SSClient {
                         });
         }
     }
+
 }

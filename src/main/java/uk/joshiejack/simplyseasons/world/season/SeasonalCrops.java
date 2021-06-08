@@ -2,9 +2,14 @@ package uk.joshiejack.simplyseasons.world.season;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -24,6 +29,7 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonalCrops {
+    public static final ITag.INamedTag<Block> JUNK = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "junk"));
     private static final Map<Block, SeasonPredicate> REGISTRY = Maps.newHashMap();
     public static final Map<Item, SeasonPredicate> ITEMS = new HashMap<>();
 
@@ -31,7 +37,8 @@ public class SeasonalCrops {
     public static void onCropGrow(BlockEvent.CropGrowEvent.Pre event) {
         if (!(event.getWorld() instanceof ServerWorld)) return;
         SeasonPredicate predicate = REGISTRY.get(event.getState().getBlock());
-        if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos())) {
+        if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
+                SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.deny(event.getWorld(), event.getPos())) {
             event.setResult(Event.Result.DENY);
         }
     }
@@ -40,7 +47,8 @@ public class SeasonalCrops {
     public static void onTreeGrow(SaplingGrowTreeEvent event) {
         if (!(event.getWorld() instanceof ServerWorld)) return;
         SeasonPredicate predicate = REGISTRY.get(event.getWorld().getBlockState(event.getPos()).getBlock());
-        if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos())) {
+        if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
+                SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.deny(event.getWorld(), event.getPos())) {
             event.setResult(Event.Result.DENY);
         }
     }
@@ -76,5 +84,22 @@ public class SeasonalCrops {
                 }
             }
         });
+    }
+
+    public enum CropOutOfSeasonEffect {
+        SLOW_GROWTH((w, p) -> w.getRandom().nextFloat() >= 0.01F),
+        NO_GROWTH((w, p) -> true),
+        REPLACE_WITH_JUNK((w, p) -> w.setBlock(p, JUNK.getRandomElement(w.getRandom()).defaultBlockState(), 3)),
+        SET_TO_AIR((w, p) -> w.setBlock(p, Blocks.AIR.defaultBlockState(), 3));
+
+        private final CropPredicate predicate;
+
+        CropOutOfSeasonEffect(CropPredicate predicate) {
+            this.predicate = predicate;
+        }
+    }
+
+    public interface CropPredicate {
+        boolean deny(IWorld world, BlockPos pos);
     }
 }

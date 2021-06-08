@@ -14,7 +14,7 @@ import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
-import uk.joshiejack.simplyseasons.client.SSConfig;
+import uk.joshiejack.simplyseasons.client.SSClientConfig;
 import uk.joshiejack.simplyseasons.world.CalendarDate;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 
@@ -48,7 +48,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
 
     @Override
     public boolean isEnabled() {
-        return SSConfig.enableHUD.get();
+        return SSClientConfig.enableHUD.get();
     }
 
     @Override

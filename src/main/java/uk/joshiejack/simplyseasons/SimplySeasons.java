@@ -4,6 +4,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -22,11 +23,13 @@ import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.IWeatherProvider;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.api.Weather;
-import uk.joshiejack.simplyseasons.client.SSConfig;
+import uk.joshiejack.simplyseasons.client.SSClientConfig;
+import uk.joshiejack.simplyseasons.data.SSBlockTags;
 import uk.joshiejack.simplyseasons.data.SSDatabase;
 import uk.joshiejack.simplyseasons.data.SSLanguage;
 import uk.joshiejack.simplyseasons.loot.SeasonCheck;
 import uk.joshiejack.simplyseasons.world.season.AbstractSeasonsProvider;
+import uk.joshiejack.simplyseasons.world.season.SeasonalCrops;
 import uk.joshiejack.simplyseasons.world.season.SeasonsProvider;
 import uk.joshiejack.simplyseasons.world.weather.AbstractWeatherProvider;
 import uk.joshiejack.simplyseasons.world.weather.SeasonalWeatherProvider;
@@ -42,7 +45,9 @@ public class SimplySeasons {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::setup);
         SSSounds.SOUNDS.register(eventBus);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SSConfig.create());
+        ModLoadingContext ctx = ModLoadingContext.get();
+        ctx.registerConfig(ModConfig.Type.COMMON, SSConfig.create());
+        ctx.registerConfig(ModConfig.Type.CLIENT, SSClientConfig.create());
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -58,8 +63,11 @@ public class SimplySeasons {
     @SubscribeEvent
     public static void onDataGathering(final GatherDataEvent event) {
         final DataGenerator generator = event.getGenerator();
-        if (event.includeServer())
+        if (event.includeServer()) {
             generator.addProvider(new SSDatabase(generator));
+            generator.addProvider(new SSBlockTags(generator, event.getExistingFileHelper()));
+        }
+
         if (event.includeClient())
             generator.addProvider(new SSLanguage(generator));
     }
@@ -74,5 +82,18 @@ public class SimplySeasons {
         private static RegistryObject<SoundEvent> createSoundEvent(@Nonnull String name) {
             return SOUNDS.register(name, () -> new SoundEvent(new ResourceLocation(SimplySeasons.MODID, name)));
         }
+    }
+
+    public static class SSConfig {
+        public static ForgeConfigSpec.EnumValue<SeasonalCrops.CropOutOfSeasonEffect> cropOutOfSeasonEffect;
+
+        SSConfig(ForgeConfigSpec.Builder builder) {
+            cropOutOfSeasonEffect = builder.defineEnum("Crop out of season effect", SeasonalCrops.CropOutOfSeasonEffect.REPLACE_WITH_JUNK);
+        }
+
+        public static ForgeConfigSpec create() {
+            return new ForgeConfigSpec.Builder().configure(SSConfig::new).getValue();
+        }
+
     }
 }
