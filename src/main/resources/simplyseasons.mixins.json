@@ -8,7 +8,6 @@
     "SSBeeHiveTileEntity",
     "SSBiome",
     "SSCauldronBlock",
-    "SSMusicTicker",
     "SSServerWorld",
     "SSSnowGolemEntity",
     "SSWeatherCommand",
@@ -16,7 +15,8 @@
   ],
   "client": [
     "client.SSClientWorld",
-    "client.SSWorldRenderer"
+    "client.SSWorldRenderer",
+    "client.SSMusicTicker"
   ],
   "injectors": {
     "defaultRequire": 1
