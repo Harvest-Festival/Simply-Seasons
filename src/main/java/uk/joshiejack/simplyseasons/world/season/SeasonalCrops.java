@@ -27,6 +27,7 @@ import uk.joshiejack.simplyseasons.world.SSServerConfig;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiPredicate;
 
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonalCrops {
@@ -39,7 +40,7 @@ public class SeasonalCrops {
         if (!(event.getWorld() instanceof ServerWorld)) return;
         SeasonPredicate predicate = REGISTRY.get(event.getState().getBlock());
         if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
-                SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.deny(event.getWorld(), event.getPos())) {
+                SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.test(event.getWorld(), event.getPos())) {
             event.setResult(Event.Result.DENY);
         }
     }
@@ -49,7 +50,7 @@ public class SeasonalCrops {
         if (!(event.getWorld() instanceof ServerWorld)) return;
         SeasonPredicate predicate = REGISTRY.get(event.getWorld().getBlockState(event.getPos()).getBlock());
         if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
-                SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.deny(event.getWorld(), event.getPos())) {
+                SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.test(event.getWorld(), event.getPos())) {
             event.setResult(Event.Result.DENY);
         }
     }
@@ -93,14 +94,10 @@ public class SeasonalCrops {
         REPLACE_WITH_JUNK((w, p) -> w.setBlock(p, JUNK.getRandomElement(w.getRandom()).defaultBlockState(), 3)),
         SET_TO_AIR((w, p) -> w.setBlock(p, Blocks.AIR.defaultBlockState(), 3));
 
-        private final CropPredicate predicate;
+        private final BiPredicate<IWorld, BlockPos> predicate;
 
-        CropOutOfSeasonEffect(CropPredicate predicate) {
+        CropOutOfSeasonEffect(BiPredicate<IWorld, BlockPos> predicate) {
             this.predicate = predicate;
         }
-    }
-
-    public interface CropPredicate {
-        boolean deny(IWorld world, BlockPos pos);
     }
 }
