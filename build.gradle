@@ -52,6 +52,10 @@ repositories {
             includeGroup "dev.latvian.mods"
         }
     }
+    maven {
+        name = "Jared's Maven (CRT)"
+        url "https://maven.blamejared.com"
+    }
 }
 
 ext.build_number=""
@@ -136,6 +140,11 @@ dependencies {
     compileOnly fg.deobf("me.shedaniel:architectury-forge:${architectury_version}")
     compileOnly fg.deobf("dev.latvian.mods:rhino:${rhino_version}")
     compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    compileOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${bookshelf_version}")
+    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${bookshelf_version}")
+    compileOnly fg.deobf("net.darkhax.botanybots:BotanyPots-1.16.5:${botanypots_version}")
+    runtimeOnly fg.deobf("net.darkhax.botanybots:BotanyPots-1.16.5:${botanypots_version}")
+
 }
 
 jar {

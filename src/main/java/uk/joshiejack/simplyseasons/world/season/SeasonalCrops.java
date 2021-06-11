@@ -94,7 +94,7 @@ public class SeasonalCrops {
         REPLACE_WITH_JUNK((w, p) -> w.setBlock(p, JUNK.getRandomElement(w.getRandom()).defaultBlockState(), 3)),
         SET_TO_AIR((w, p) -> w.setBlock(p, Blocks.AIR.defaultBlockState(), 3));
 
-        private final BiPredicate<IWorld, BlockPos> predicate;
+        public final BiPredicate<IWorld, BlockPos> predicate;
 
         CropOutOfSeasonEffect(BiPredicate<IWorld, BlockPos> predicate) {
             this.predicate = predicate;

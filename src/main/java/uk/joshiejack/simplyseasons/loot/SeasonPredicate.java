@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -49,12 +49,12 @@ public class SeasonPredicate {
         return seasons.stream();
     }
 
-    public boolean matches(ServerWorld world, BlockPos pos) {
+    public boolean matches(World world, BlockPos pos) {
         return matches(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     @SuppressWarnings("ConstantConditions")
-    public boolean matches(ServerWorld world, double x, double y, double z) {
+    public boolean matches(World world, double x, double y, double z) {
         BlockPos blockpos = new BlockPos(x, y, z);
         LazyOptional<ISeasonProvider> seasonsProvider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         return seasonsProvider.isPresent() && seasonsProvider.resolve().get().getSeasonsAt(world, blockpos).stream()
