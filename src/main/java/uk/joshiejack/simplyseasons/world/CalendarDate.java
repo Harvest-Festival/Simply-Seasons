@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import java.time.DayOfWeek;
 
 public class CalendarDate implements INBTSerializable<CompoundNBT> {
-    public static final int DAYS_PER_SEASON = 28;
+    public static final int DAYS_PER_SEASON = 7;
     private DayOfWeek weekday = DayOfWeek.MONDAY;
     private int monthday = 1;
     private int year = 1;
