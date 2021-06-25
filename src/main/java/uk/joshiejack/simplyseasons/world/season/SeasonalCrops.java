@@ -1,8 +1,7 @@
 package uk.joshiejack.simplyseasons.world.season;
 
 import com.google.common.collect.Maps;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
@@ -32,6 +31,7 @@ import java.util.function.BiPredicate;
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonalCrops {
     public static final ITag.INamedTag<Block> JUNK = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "junk"));
+    public static final ITag.INamedTag<Block> INDESTRUCTIBLE = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "indestructible"));
     private static final Map<Block, SeasonPredicate> REGISTRY = Maps.newHashMap();
     public static final Map<Item, SeasonPredicate> ITEMS = new HashMap<>();
 
@@ -91,13 +91,27 @@ public class SeasonalCrops {
     public enum CropOutOfSeasonEffect {
         SLOW_GROWTH((w, p) -> w.getRandom().nextFloat() >= 0.01F),
         NO_GROWTH((w, p) -> true),
-        REPLACE_WITH_JUNK((w, p) -> w.setBlock(p, JUNK.getRandomElement(w.getRandom()).defaultBlockState(), 3)),
-        SET_TO_AIR((w, p) -> w.setBlock(p, Blocks.AIR.defaultBlockState(), 3));
+        REPLACE_WITH_JUNK((w, p) -> {
+            if (canDestroy(w.getBlockState(p)))
+                return w.setBlock(p, JUNK.getRandomElement(w.getRandom()).defaultBlockState(), 3);
+            return true;
+        }),
+        SET_TO_AIR((w, p) -> {
+            if (canDestroy(w.getBlockState(p)))
+                return w.setBlock(p, Blocks.AIR.defaultBlockState(), 3);
+            return true;
+        });
 
         public final BiPredicate<IWorld, BlockPos> predicate;
 
         CropOutOfSeasonEffect(BiPredicate<IWorld, BlockPos> predicate) {
             this.predicate = predicate;
+        }
+
+        private static boolean canDestroy(BlockState state) {
+            return !(state.getBlock() instanceof LeavesBlock)
+                    && !(state.getBlock() instanceof SaplingBlock)
+                    && !INDESTRUCTIBLE.contains(state.getBlock());
         }
     }
 }

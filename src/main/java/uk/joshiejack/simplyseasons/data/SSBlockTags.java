@@ -17,5 +17,6 @@ public final class SSBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags() {
         tag(SeasonalCrops.JUNK).add(Blocks.DEAD_BUSH, Blocks.AIR);
+        tag(SeasonalCrops.INDESTRUCTIBLE).add(Blocks.SWEET_BERRY_BUSH, Blocks.CACTUS, Blocks.SUGAR_CANE, Blocks.BAMBOO, Blocks.COCOA);
     }
 }

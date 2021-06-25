@@ -96,6 +96,5 @@ public class SimplySeasons {
         public static ForgeConfigSpec create() {
             return new ForgeConfigSpec.Builder().configure(SSConfig::new).getValue();
         }
-
     }
 }
