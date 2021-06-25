@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.BonemealEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.SaplingGrowTreeEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -34,6 +35,15 @@ public class SeasonalCrops {
     public static final ITag.INamedTag<Block> INDESTRUCTIBLE = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "indestructible"));
     private static final Map<Block, SeasonPredicate> REGISTRY = Maps.newHashMap();
     public static final Map<Item, SeasonPredicate> ITEMS = new HashMap<>();
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onSeedInteract(PlayerInteractEvent.RightClickBlock event) {
+        SeasonPredicate predicate = ITEMS.get(event.getItemStack().getItem());
+        if (SimplySeasons.SSConfig.disableOutofSeasonPlanting.get() &&
+                predicate != null && !predicate.matches(event.getWorld(), event.getPos())) {
+            event.setCanceled(true);
+        }
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onCropGrow(BlockEvent.CropGrowEvent.Pre event) {

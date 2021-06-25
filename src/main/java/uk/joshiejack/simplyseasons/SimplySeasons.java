@@ -88,9 +88,11 @@ public class SimplySeasons {
 
     public static class SSConfig {
         public static ForgeConfigSpec.EnumValue<SeasonalCrops.CropOutOfSeasonEffect> cropOutOfSeasonEffect;
+        public static ForgeConfigSpec.BooleanValue disableOutofSeasonPlanting;
 
         SSConfig(ForgeConfigSpec.Builder builder) {
             cropOutOfSeasonEffect = builder.defineEnum("Crop out of season effect", SeasonalCrops.CropOutOfSeasonEffect.REPLACE_WITH_JUNK);
+            disableOutofSeasonPlanting = builder.define("Disable planting of seeds that are out of season", true);
         }
 
         public static ForgeConfigSpec create() {
