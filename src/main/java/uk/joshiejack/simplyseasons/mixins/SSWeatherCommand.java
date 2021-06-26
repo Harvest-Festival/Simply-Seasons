@@ -15,21 +15,21 @@ public class SSWeatherCommand {
     @Inject(method = "setRain", at = @At("HEAD"), cancellable = true)
     private static void setRainOverride(CommandSource source, int time, CallbackInfoReturnable<Integer> ci) {
         if (BetterWeatherPlugin.loaded) return;
-        source.sendFailure(new TranslationTextComponent("command." + SimplySeasons.MODID + "weather.disabled"));
+        source.sendFailure(new TranslationTextComponent("command." + SimplySeasons.MODID + ".weather.disabled"));
         ci.setReturnValue(0);
     }
 
     @Inject(method = "setClear", at = @At("HEAD"), cancellable = true)
     private static void setClearOverride(CommandSource source, int time, CallbackInfoReturnable<Integer> ci) {
         if (BetterWeatherPlugin.loaded) return;
-        source.sendFailure(new TranslationTextComponent("command." + SimplySeasons.MODID + "weather.disabled"));
+        source.sendFailure(new TranslationTextComponent("command." + SimplySeasons.MODID + ".weather.disabled"));
         ci.setReturnValue(0);
     }
 
     @Inject(method = "setThunder", at = @At("HEAD"), cancellable = true)
     private static void setThunderOverride(CommandSource source, int time, CallbackInfoReturnable<Integer> ci) {
         if (BetterWeatherPlugin.loaded) return;
-        source.sendFailure(new TranslationTextComponent("command." + SimplySeasons.MODID + "weather.disabled"));
+        source.sendFailure(new TranslationTextComponent("command." + SimplySeasons.MODID + ".weather.disabled"));
         ci.setReturnValue(0);
     }
 }
