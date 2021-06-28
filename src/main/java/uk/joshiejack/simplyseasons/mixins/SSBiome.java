@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
-@Mixin(Biome.class)
+@Mixin(value = Biome.class, priority = 999)
 public abstract class SSBiome {
     @Redirect(method = "shouldSnow", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/Biome;getTemperature(Lnet/minecraft/util/math/BlockPos;)F"))
     public float getTemperatureShouldSnow(Biome biome, BlockPos pos) {

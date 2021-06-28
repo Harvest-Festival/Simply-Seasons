@@ -15,7 +15,7 @@ import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
-@Mixin(World.class)
+@Mixin(value = World.class, priority = 999)
 public abstract class SSWorld implements IWorld, AutoCloseable, IForgeWorld {
     public World asWorld() {
         return (World) (Object) this;

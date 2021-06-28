@@ -1,5 +1,5 @@
 {
-  "required": true,
+  "required": false,
   "package": "uk.joshiejack.simplyseasons.mixins",
   "compatibilityLevel": "JAVA_8",
   "refmap": "simplyseasons.refmap.json",
@@ -18,8 +18,5 @@
     "client.SSWorldRenderer",
     "client.SSMusicTicker"
   ],
-  "injectors": {
-    "defaultRequire": 1
-  },
   "minVersion": "0.8"
 }

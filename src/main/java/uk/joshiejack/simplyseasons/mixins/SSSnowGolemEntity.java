@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
-@Mixin(SnowGolemEntity.class)
+@Mixin(value = SnowGolemEntity.class, priority = 999)
 public class SSSnowGolemEntity extends GolemEntity {
     protected SSSnowGolemEntity(EntityType<? extends GolemEntity> type, World world) {
         super(type, world);
