@@ -48,7 +48,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
 
     @Override
     public boolean isEnabled() {
-        return SSClientConfig.enableHUD.get();
+        return SSClientConfig.enableHUD.get() && getSeason(Minecraft.getInstance().level) != null;
     }
 
     @Override
