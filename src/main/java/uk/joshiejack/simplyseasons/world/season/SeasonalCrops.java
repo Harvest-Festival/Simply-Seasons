@@ -14,6 +14,7 @@ import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.SaplingGrowTreeEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,8 +34,9 @@ import java.util.function.BiPredicate;
 public class SeasonalCrops {
     public static final ITag.INamedTag<Block> JUNK = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "junk"));
     public static final ITag.INamedTag<Block> INDESTRUCTIBLE = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "indestructible"));
-    private static final Map<Block, SeasonPredicate> REGISTRY = Maps.newHashMap();
+    private static final Map<Block, SeasonPredicate> BLOCKS = Maps.newHashMap();
     public static final Map<Item, SeasonPredicate> ITEMS = new HashMap<>();
+    private static boolean attemptedToDisableSimplySeasonsGrowth = false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onSeedInteract(PlayerInteractEvent.RightClickBlock event) {
@@ -48,7 +50,7 @@ public class SeasonalCrops {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onCropGrow(BlockEvent.CropGrowEvent.Pre event) {
         if (!(event.getWorld() instanceof ServerWorld)) return;
-        SeasonPredicate predicate = REGISTRY.get(event.getState().getBlock());
+        SeasonPredicate predicate = BLOCKS.get(event.getState().getBlock());
         if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
                 SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.test(event.getWorld(), event.getPos())) {
             event.setResult(Event.Result.DENY);
@@ -58,7 +60,7 @@ public class SeasonalCrops {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onTreeGrow(SaplingGrowTreeEvent event) {
         if (!(event.getWorld() instanceof ServerWorld)) return;
-        SeasonPredicate predicate = REGISTRY.get(event.getWorld().getBlockState(event.getPos()).getBlock());
+        SeasonPredicate predicate = BLOCKS.get(event.getWorld().getBlockState(event.getPos()).getBlock());
         if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
                 SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.test(event.getWorld(), event.getPos())) {
             event.setResult(Event.Result.DENY);
@@ -68,16 +70,27 @@ public class SeasonalCrops {
     @SubscribeEvent
     public static void onApplyBonemeal(BonemealEvent event) {
         if (!(event.getWorld() instanceof ServerWorld)) return;
-        SeasonPredicate predicate = REGISTRY.get(event.getWorld().getBlockState(event.getPos()).getBlock());
-        if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos())) {
+        SeasonPredicate predicate = BLOCKS.get(event.getWorld().getBlockState(event.getPos()).getBlock());
+        if (predicate != null && !predicate.matches(event.getWorld(), event.getPos())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
+    public static void attemptToDisableSimplySeasonsGrowth(WorldEvent.Load event) {
+        if (!attemptedToDisableSimplySeasonsGrowth
+                && SereneSeasonsPlugin.loaded && !SSServerConfig.useSSCropsHandler.get()) {
+            attemptedToDisableSimplySeasonsGrowth = true;
+            BLOCKS.clear();
+            ITEMS.clear();
+        }
+    }
+
+    @SubscribeEvent
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
-        if (SereneSeasonsPlugin.loaded & !SSServerConfig.useSSCropsHandler.get()) return; //let them handle this
-        REGISTRY.clear(); //Reloading
+        attemptedToDisableSimplySeasonsGrowth = false;
+        BLOCKS.clear(); //Reloading
+        ITEMS.clear(); //Reloading
         event.table("growth_seasons").rows().forEach(row -> {
             ResourceLocation registry = row.getRL("item/block");
             SeasonPredicate predicate = SeasonPredicate.REGISTRY.get(row.get("season predicate").toString());
@@ -86,13 +99,13 @@ public class SeasonalCrops {
                 if (item != null) {
                     Block block = item instanceof BlockItem ? ((BlockItem) item).getBlock() : ForgeRegistries.BLOCKS.getValue(item.getRegistryName());
                     if (block != null) {
-                        REGISTRY.put(block, predicate);
+                        BLOCKS.put(block, predicate);
                         ITEMS.put(item, predicate);
                     }
                 } else {
                     Block block = ForgeRegistries.BLOCKS.getValue(registry);
                     if (block != null)
-                        REGISTRY.put(block, predicate);
+                        BLOCKS.put(block, predicate);
                 }
             }
         });

@@ -32,10 +32,6 @@ public class SeasonCheck implements ILootCondition {
         return v3d != null && this.predicate.matches(ctx.getLevel(), v3d.x, v3d.y, v3d.z);
     }
 
-    public static IBuilder checkSeason(SeasonPredicate.Builder builder) {
-        return () -> new SeasonCheck(builder.build());
-    }
-
     public static class Serializer implements ILootSerializer<SeasonCheck> {
         @Override
         public void serialize(JsonObject jsonObject, SeasonCheck check, @Nonnull JsonSerializationContext ctx) {

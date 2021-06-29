@@ -6,6 +6,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import uk.joshiejack.simplyseasons.SimplySeasons;
+import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.SSClientConfig;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 import uk.joshiejack.simplyseasons.world.season.SeasonalCrops;
@@ -18,6 +19,7 @@ public class TooltipRenderer {
         if (!SSClientConfig.enableCropsTooltip.get()) return;
         if (SeasonalCrops.ITEMS.containsKey(event.getItemStack().getItem())) {
             SeasonalCrops.ITEMS.get(event.getItemStack().getItem()).seasons()
+                    .filter(season -> SSClientConfig.showWetDryTooltip.get() || season.ordinal() <= Season.WINTER.ordinal())
                     .forEach(season -> event.getToolTip().add(SeasonsHUDRender.getName(season).withStyle(SeasonData.get(season).hud)));
         }
     }

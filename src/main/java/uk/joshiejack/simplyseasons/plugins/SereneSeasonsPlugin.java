@@ -34,13 +34,11 @@ public class SereneSeasonsPlugin implements IModPlugin {
         //Register season providers, using serene seasons data
         SereneSeasonsPlugin.loaded = true;
         MinecraftForge.EVENT_BUS.register(this);
-        if (SSServerConfig.useSSCropsHandler.get()) { //Add the default glass block greenhouse from serene seasons
-            final Set<Season> all = Sets.newHashSet(Season.SPRING, Season.SUMMER, Season.AUTUMN, Season.WINTER, Season.WET, Season.DRY);
-            final Set<Season> none = Sets.newHashSet();
-            SSeasonsAPI.LOCALIZED_SEASON_HANDLER.add((world, pos) ->
-                    IntStream.rangeClosed(0, 15)
-                            .anyMatch(i -> world.getBlockState(pos.offset(0, i + 1, 0)).getBlock() instanceof AbstractGlassBlock) ? all : none);
-        }
+        final Set<Season> all = Sets.newHashSet(Season.SPRING, Season.SUMMER, Season.AUTUMN, Season.WINTER, Season.WET, Season.DRY);
+        final Set<Season> none = Sets.newHashSet();
+        SSeasonsAPI.LOCALIZED_SEASON_HANDLER.add((world, pos) -> SSServerConfig.useSSCropsHandler.get()
+                && IntStream.rangeClosed(0, 15)
+                .anyMatch(i -> world.getBlockState(pos.offset(0, i + 1, 0)).getBlock() instanceof AbstractGlassBlock) ? all : none);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
