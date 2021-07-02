@@ -8,6 +8,7 @@ public class SSClientConfig {
     public static ForgeConfigSpec.BooleanValue showWetDryTooltip;
     public static ForgeConfigSpec.IntValue fogDensity;
     public static ForgeConfigSpec.BooleanValue seasonalMusic;
+    public static ForgeConfigSpec.BooleanValue seasonInDebug;
 
     SSClientConfig(ForgeConfigSpec.Builder builder) {
         enableHUD = builder.define("Enable season HUD", true);
@@ -15,6 +16,7 @@ public class SSClientConfig {
         showWetDryTooltip = builder.define("Show wet/dry tooltip", false);
         fogDensity = builder.defineInRange("Fog/Blizzard density", 30, 0, 100);
         seasonalMusic = builder.define("Enable seasonal music", false);
+        seasonInDebug = builder.define("Display season in debug menu", true);
     }
 
     public static ForgeConfigSpec create() {

@@ -34,12 +34,14 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
         registerSeasonHUD(Season.WINTER);
     }
 
+    private static EnumMap<Season, TranslationTextComponent> TEXT_CACHE = new EnumMap<>(Season.class);
+
     private static void registerSeasonHUD(Season season) {
         HUD.put(season, new ResourceLocation(SimplySeasons.MODID, "textures/gui/" + season.name().toLowerCase(Locale.ENGLISH) + ".png"));
     }
 
     @Nullable
-    private static Season getSeason(World world) {
+    public static Season getSeason(World world) {
         LazyOptional<ISeasonProvider> seasonsProvider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
         if (seasonsProvider.isPresent()) {
             return seasonsProvider.resolve().get().getSeason(world);
@@ -57,7 +59,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     }
 
     public static TranslationTextComponent getName(Season season) {
-        return StringHelper.localize(SimplySeasons.MODID + "." + season.name().toLowerCase(Locale.ROOT));
+        return TEXT_CACHE.computeIfAbsent(season, (s) -> StringHelper.localize(SimplySeasons.MODID + "." + s.name().toLowerCase(Locale.ROOT)));
     }
 
     @Override
