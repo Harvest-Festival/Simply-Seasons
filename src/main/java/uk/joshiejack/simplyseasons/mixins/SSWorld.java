@@ -33,11 +33,11 @@ public abstract class SSWorld implements IWorld, AutoCloseable, IForgeWorld {
             long time = TimeHelper.getTimeOfDay(asWorld().getDayTime());
             if (time >= data.sunrise && time < data.sunset) {
                 long daytime = (data.sunset - data.sunrise);
-                return (((time - data.sunrise) * -0.5f) / daytime) - 0.75f;
+                return -((((time - data.sunrise) * -0.5f) / daytime) - 0.75f);
             } else {
                 if (time < data.sunrise) time += 24000L; //Adjust the time so that we're the day after
                 long daytime = ((24000L + data.sunrise) - data.sunset);
-                return (((time - data.sunset) * -0.5f) / daytime) - 0.25f;
+                return -((((time - data.sunset) * -0.5f) / daytime) - 0.25f);
             }
         }
 
