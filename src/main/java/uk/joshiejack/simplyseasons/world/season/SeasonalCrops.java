@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
@@ -96,15 +97,15 @@ public class SeasonalCrops {
             SeasonPredicate predicate = SeasonPredicate.REGISTRY.get(row.get("season predicate").toString());
             if (predicate != null) {
                 Item item = ForgeRegistries.ITEMS.getValue(registry);
-                if (item != null) {
+                if (item != Items.AIR) {
                     Block block = item instanceof BlockItem ? ((BlockItem) item).getBlock() : ForgeRegistries.BLOCKS.getValue(item.getRegistryName());
-                    if (block != null) {
+                    if (block != Blocks.AIR) {
                         BLOCKS.put(block, predicate);
                         ITEMS.put(item, predicate);
                     }
                 } else {
                     Block block = ForgeRegistries.BLOCKS.getValue(registry);
-                    if (block != null)
+                    if (block != Blocks.AIR)
                         BLOCKS.put(block, predicate);
                 }
             }
