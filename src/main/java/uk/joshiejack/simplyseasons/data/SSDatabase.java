@@ -26,7 +26,7 @@ public class SSDatabase extends AbstractDatabaseProvider {
 
     @Override
     protected void addDatabaseEntries() {
-        addTimeUnit("season_length_multiplier", 1);
+        addTimeUnit("season_length_multiplier", 4);
         addSeasonData(Season.SPRING, TextFormatting.GREEN, 0, "0x80B76C", "0", "0x87CEFA", 6000, 20500);
         addSeasonData(Season.SUMMER, TextFormatting.YELLOW, 0.1, "0", "0x4A9C2E", "0x79a7ff", 5000, 21500);
         addSeasonData(Season.AUTUMN, TextFormatting.GOLD, -0.1, "0xB25900", "0xFF9900", "0x8CBED6", 7000, 19000);

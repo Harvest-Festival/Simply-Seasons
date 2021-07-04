@@ -16,6 +16,6 @@ public class DateChangedPacket extends PenguinPacket {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void handleClientPacket() {
-        SeasonsHUDRender.DATE.update(Minecraft.getInstance().level.getDayTime());
+        SeasonsHUDRender.DATE.update(Minecraft.getInstance().level);
     }
 }

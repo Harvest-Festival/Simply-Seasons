@@ -48,7 +48,7 @@ public abstract class SSServerWorld extends World {
         BlockPos below = pos.below();
         BlockState state = getBlockState(pos);
         float temperature = SeasonalWorlds.getTemperature(this, getBiome(pos), pos);
-        int monthday = CalendarDate.getDay(getDayTime());
+        int monthday = CalendarDate.getDay(this);
         //////////////// MELT ICE //////////////////
         if (SeasonalWorlds.shouldMelt(getBlockState(below), temperature, Blocks.ICE))
             setBlockAndUpdate(below, Blocks.WATER.defaultBlockState());

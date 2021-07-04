@@ -25,3 +25,9 @@ license="MIT"
     versionRange="[0.3.0,)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.simplyseasons]]
+    modId="botanypots"
+    mandatory=false
+    versionRange="[1.16.5-7.1.20,)"
+    ordering="AFTER"
+    side="BOTH"

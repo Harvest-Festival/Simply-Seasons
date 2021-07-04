@@ -66,7 +66,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     public ITextComponent getHeader(Minecraft mc) {
         Season season = getSeason(mc.level);
         SeasonData data = SeasonData.get(season);
-        if (mc.level.getDayTime() %60 == 0 || !SeasonsHUDRender.DATE.isSet()) SeasonsHUDRender.DATE.update(mc.level.getDayTime());
+        if (mc.level.getDayTime() %60 == 0 || !SeasonsHUDRender.DATE.isSet()) SeasonsHUDRender.DATE.update(mc.level);
         return StringHelper.format(SimplySeasons.MODID + ".hud", getName(season), DATE.getDay()).withStyle(data.hud);
     }
 }

@@ -1,7 +1,10 @@
 package uk.joshiejack.simplyseasons.world;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
+import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
 import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
 
 import javax.annotation.Nonnull;
@@ -38,11 +41,11 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
         return year;
     }
 
-    public void update(long time) {
+    public void update(World world) {
         set = true;
-        weekday = TimeHelper.getWeekday(time);
-        monthday = 1 + getDay(time);
-        year = 1 + getYear(time);
+        weekday = TimeHelper.getWeekday(world.getDayTime());
+        monthday = 1 + getDay(world);
+        year = 1 + getYear(world);
     }
 
     @Override
@@ -61,12 +64,20 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
         year = tag.getShort("Year");
     }
 
-    public static int getYear(long time) {
-        return (int) Math.floor((double) TimeHelper.getElapsedDays(time) / 4 / DAYS_PER_SEASON);
+    public static int getYear(World world) {
+        return (int) Math.floor((double) TimeHelper.getElapsedDays(world.getDayTime()) / 4 / seasonLength(world));
     }
 
-    public static int getDay(long totalTime) {
-        return TimeHelper.getElapsedDays(totalTime) % DAYS_PER_SEASON;
+    public static int getDay(World world) {
+        return (int) (TimeHelper.getElapsedDays(world.getDayTime()) % seasonLength(world));
+    }
+
+    private static int serverTypeMultiplier(World world) {
+        return world.getServer() == null || world.getServer() instanceof DedicatedServer ? 10 : 1;
+    }
+
+    public static float seasonLength(World world) {
+        return (float) (TimeUnitRegistry.get("season_length_multiplier") * DAYS_PER_SEASON * serverTypeMultiplier(world));
     }
 
     public boolean isSet() {
