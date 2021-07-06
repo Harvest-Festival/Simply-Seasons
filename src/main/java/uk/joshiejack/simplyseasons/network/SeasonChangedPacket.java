@@ -1,9 +1,10 @@
 package uk.joshiejack.simplyseasons.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
 import uk.joshiejack.penguinlib.network.PenguinPacket;
 import uk.joshiejack.penguinlib.util.PenguinLoader;
@@ -29,9 +30,10 @@ public class SeasonChangedPacket extends PenguinPacket {
         season = Season.values()[pb.readByte()];
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void handle(PlayerEntity player) {
-        World world = player.level;
+    public void handleClientPacket() {
+        World world = Minecraft.getInstance().level;
         world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
                 .ifPresent(provider -> {
                     provider.setSeason(world, season);

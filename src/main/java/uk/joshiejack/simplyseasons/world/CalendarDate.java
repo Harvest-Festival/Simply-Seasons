@@ -1,7 +1,6 @@
 package uk.joshiejack.simplyseasons.world;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
@@ -9,9 +8,11 @@ import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
 
 import javax.annotation.Nonnull;
 import java.time.DayOfWeek;
+import java.util.Objects;
 
 public class CalendarDate implements INBTSerializable<CompoundNBT> {
     public static final int DAYS_PER_SEASON = 7;
+    public static boolean isSinglePlayer;
     private DayOfWeek weekday = DayOfWeek.MONDAY;
     private int monthday = 1;
     private int year = 1;
@@ -73,7 +74,9 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
     }
 
     private static int serverTypeMultiplier(World world) {
-        return world.getServer() == null || world.getServer() instanceof DedicatedServer ? 10 : 1;
+        return (world.isClientSide && isSinglePlayer) ||
+                (!world.isClientSide && Objects.requireNonNull(world.getServer()).isSingleplayer())
+                ? 1 : (int) (TimeUnitRegistry.get("dedicated_server_season_multiplier"));
     }
 
     public static float seasonLength(World world) {

@@ -15,6 +15,7 @@ import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.network.DateChangedPacket;
 import uk.joshiejack.simplyseasons.network.SeasonChangedPacket;
+import uk.joshiejack.simplyseasons.network.ServerTypePacket;
 import uk.joshiejack.simplyseasons.network.WeatherChangedPacket;
 
 @SuppressWarnings("unused, ConstantConditions")
@@ -33,6 +34,8 @@ public class WorldUpdater {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         sendUpdates(event.getPlayer());
+        if (!event.getPlayer().level.isClientSide)
+            PenguinNetwork.sendToClient(new ServerTypePacket(event.getPlayer().level.getServer().isSingleplayer()), (ServerPlayerEntity) event.getPlayer());
     }
 
     @SubscribeEvent
