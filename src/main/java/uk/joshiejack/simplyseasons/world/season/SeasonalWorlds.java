@@ -2,6 +2,8 @@ package uk.joshiejack.simplyseasons.world.season;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -31,6 +33,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonalWorlds {
     private static final Map<RegistryKey<World>, ISeasonProvider> PROVIDERS = new HashMap<>();
+    public static ITag.INamedTag<Block> SPRING_NO_BONEMEAL_BLOCKS = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "spring_no_bonemeal"));
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onAttachCapability(AttachCapabilitiesEvent<World> event) {

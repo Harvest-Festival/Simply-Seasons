@@ -9,6 +9,7 @@ public class SSClientConfig {
     public static ForgeConfigSpec.IntValue fogDensity;
     public static ForgeConfigSpec.BooleanValue seasonalMusic;
     public static ForgeConfigSpec.BooleanValue seasonInDebug;
+    public static ForgeConfigSpec.BooleanValue requireItemInInventoryForHUD;
 
     SSClientConfig(ForgeConfigSpec.Builder builder) {
         enableHUD = builder.define("Enable season HUD", true);
@@ -17,6 +18,7 @@ public class SSClientConfig {
         fogDensity = builder.defineInRange("Fog/Blizzard density", 30, 0, 100);
         seasonalMusic = builder.define("Enable seasonal music", false);
         seasonInDebug = builder.define("Display season in debug menu", true);
+        requireItemInInventoryForHUD = builder.define("Require calendar items in inventory to display the HUD", false);
     }
 
     public static ForgeConfigSpec create() {

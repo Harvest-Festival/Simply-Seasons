@@ -63,10 +63,14 @@ public abstract class SSServerWorld extends World {
                         setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                         if (season == Season.SPRING) {
                             BlockState belowState = getBlockState(below);
-                            if (random.nextFloat() <= 0.05F && belowState.getBlock() instanceof GrassBlock) {
+                            if (random.nextFloat() <= 0.05F && belowState.getBlock() instanceof GrassBlock
+                                    && (!belowState.getBlock().is(SeasonalWorlds.SPRING_NO_BONEMEAL_BLOCKS))) {
                                 IGrowable igrowable = (IGrowable) belowState.getBlock();
-                                if (igrowable.isValidBonemealTarget(this, below, belowState, false))
-                                    igrowable.performBonemeal((ServerWorld) (Object) this, random, below, belowState);
+                                if (igrowable.isValidBonemealTarget(this, below, belowState, false)) {
+                                    try {
+                                        igrowable.performBonemeal((ServerWorld) (Object) this, random, below, belowState);
+                                    } catch (Exception ignored) {}
+                                }
                             } else if (random.nextFloat() <= 0.2F && belowState.getBlock() == Blocks.DIRT)
                                 setBlockAndUpdate(below, getBiome(below).getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial());
                         }

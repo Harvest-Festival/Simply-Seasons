@@ -1,6 +1,10 @@
 package uk.joshiejack.simplyseasons;
 
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
@@ -26,6 +30,7 @@ import uk.joshiejack.simplyseasons.api.Weather;
 import uk.joshiejack.simplyseasons.client.SSClientConfig;
 import uk.joshiejack.simplyseasons.data.SSBlockTags;
 import uk.joshiejack.simplyseasons.data.SSDatabase;
+import uk.joshiejack.simplyseasons.data.SSItemTags;
 import uk.joshiejack.simplyseasons.data.SSLanguage;
 import uk.joshiejack.simplyseasons.loot.SeasonCheck;
 import uk.joshiejack.simplyseasons.world.SSServerConfig;
@@ -67,7 +72,9 @@ public class SimplySeasons {
         final DataGenerator generator = event.getGenerator();
         if (event.includeServer()) {
             generator.addProvider(new SSDatabase(generator));
-            generator.addProvider(new SSBlockTags(generator, event.getExistingFileHelper()));
+            BlockTagsProvider blockGenerator = new SSBlockTags(generator, event.getExistingFileHelper());
+            generator.addProvider(blockGenerator);
+            generator.addProvider(new SSItemTags(generator, blockGenerator, event.getExistingFileHelper()));
         }
 
         if (event.includeClient())

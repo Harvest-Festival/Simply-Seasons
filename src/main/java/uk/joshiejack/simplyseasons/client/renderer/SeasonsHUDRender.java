@@ -1,6 +1,11 @@
 package uk.joshiejack.simplyseasons.client.renderer;
 
+import com.google.common.collect.Streams;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -25,7 +30,10 @@ import java.util.Locale;
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("unused, ConstantConditions")
 public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
+    public static final ITag.INamedTag<Item> CALENDARS = ItemTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "calendars"));
     public static final CalendarDate DATE = new CalendarDate();
+    private boolean hasInInventory;
+
     private static final EnumMap<Season, ResourceLocation> HUD = new EnumMap<>(Season.class);
     static {
         registerSeasonHUD(Season.SPRING);
@@ -48,9 +56,22 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
         } else return null;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
+    private boolean hasCalendarInInventory(PlayerEntity player) {
+        if (player.level.getDayTime() % 60 == 0) {
+            //TODO: Switch to Penguin-Lib 0.4
+            hasInInventory = Streams.concat(player.inventory.items.stream(), player.inventory.offhand.stream(), player.inventory.armor.stream())
+                    .anyMatch(stack -> CALENDARS.contains(stack.getItem()));
+        }
+
+        return hasInInventory;
+    }
+
     @Override
     public boolean isEnabled() {
-        return SSClientConfig.enableHUD.get() && getSeason(Minecraft.getInstance().level) != null;
+        return SSClientConfig.enableHUD.get() && getSeason(Minecraft.getInstance().level) != null
+                && (!SSClientConfig.requireItemInInventoryForHUD.get() || (SSClientConfig.requireItemInInventoryForHUD.get() &&
+                hasCalendarInInventory(Minecraft.getInstance().player)));
     }
 
     @Override
