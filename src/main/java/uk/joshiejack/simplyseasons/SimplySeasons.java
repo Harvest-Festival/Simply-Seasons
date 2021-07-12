@@ -94,11 +94,13 @@ public class SimplySeasons {
         public static ForgeConfigSpec.EnumValue<SeasonalCrops.CropOutOfSeasonEffect> cropOutOfSeasonEffect;
         public static ForgeConfigSpec.BooleanValue disableOutofSeasonPlanting;
         public static ForgeConfigSpec.IntValue noSleepingBefore;
+        public static ForgeConfigSpec.BooleanValue enableBeeInactivityInWinter;
 
         SSConfig(ForgeConfigSpec.Builder builder) {
             cropOutOfSeasonEffect = builder.defineEnum("Crop out of season effect", SeasonalCrops.CropOutOfSeasonEffect.REPLACE_WITH_JUNK);
             disableOutofSeasonPlanting = builder.define("Disable planting of seeds that are out of season", true);
             noSleepingBefore = builder.comment("5999 = Anytime sleeping. 10000 = 10AM. 13000 = 1PM etc.").defineInRange("Disable sleeping between 6:00 and the specified time", 5999, 5999, 23999);
+            enableBeeInactivityInWinter = builder.define("Enable inactive bees in winter", true);
         }
 
         public static ForgeConfigSpec create() {

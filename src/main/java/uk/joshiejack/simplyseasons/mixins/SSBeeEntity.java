@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 
@@ -39,7 +40,8 @@ public abstract class SSBeeEntity extends AnimalEntity {
      **/
     @Inject(method = "registerGoals", at = @At(value = "TAIL"))
     protected void registerGoals(CallbackInfo ci) {
-        findPollinationTargetGoal = this.goalSelector.availableGoals.stream().filter(goal -> goal.getGoal() instanceof BeeEntity.FindPollinationTargetGoal).findFirst().get().getGoal();
+        if (SimplySeasons.SSConfig.enableBeeInactivityInWinter.get())
+            findPollinationTargetGoal = this.goalSelector.availableGoals.stream().filter(goal -> goal.getGoal() instanceof BeeEntity.FindPollinationTargetGoal).findFirst().get().getGoal();
     }
 
     /**
@@ -47,16 +49,18 @@ public abstract class SSBeeEntity extends AnimalEntity {
      **/
     @Inject(method = "wantsToEnterHive", at = @At(value = "HEAD"), cancellable = true)
     protected void wantsToEnterHive(CallbackInfoReturnable<Boolean> cir) {
-        level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
-                .ifPresent(provider -> {
-                    Set<Season> seasons = provider.getSeasonsAt(level, blockPosition());
-                    if (seasons.size() == 1 && seasons.contains(Season.WINTER)) { //If we have more than one season at this location the bee is good
-                        if (!isHiveNearFire()) {
-                            setStayOutOfHiveCountdown(0);
-                            cir.setReturnValue(true);
+        if (SimplySeasons.SSConfig.enableBeeInactivityInWinter.get()) {
+            level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
+                    .ifPresent(provider -> {
+                        Set<Season> seasons = provider.getSeasonsAt(level, blockPosition());
+                        if (seasons.size() == 1 && seasons.contains(Season.WINTER)) { //If we have more than one season at this location the bee is good
+                            if (!isHiveNearFire()) {
+                                setStayOutOfHiveCountdown(0);
+                                cir.setReturnValue(true);
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     /**
@@ -65,7 +69,7 @@ public abstract class SSBeeEntity extends AnimalEntity {
      **/
     @Inject(method = "tick", at = @At(value = "TAIL"))
     protected void updateGoals(CallbackInfo ci) {
-        if (!level.isClientSide && level.getDayTime() % 1200 == 0
+        if (SimplySeasons.SSConfig.enableBeeInactivityInWinter.get() && !level.isClientSide && level.getDayTime() % 1200 == 0
                 && beePollinateGoal != null && findPollinationTargetGoal != null && goToKnownFlowerGoal != null) {
             level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
                     .ifPresent(provider -> {
