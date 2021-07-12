@@ -2,9 +2,6 @@ package uk.joshiejack.simplyseasons;
 
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
@@ -96,10 +93,12 @@ public class SimplySeasons {
     public static class SSConfig {
         public static ForgeConfigSpec.EnumValue<SeasonalCrops.CropOutOfSeasonEffect> cropOutOfSeasonEffect;
         public static ForgeConfigSpec.BooleanValue disableOutofSeasonPlanting;
+        public static ForgeConfigSpec.IntValue noSleepingBefore;
 
         SSConfig(ForgeConfigSpec.Builder builder) {
             cropOutOfSeasonEffect = builder.defineEnum("Crop out of season effect", SeasonalCrops.CropOutOfSeasonEffect.REPLACE_WITH_JUNK);
             disableOutofSeasonPlanting = builder.define("Disable planting of seeds that are out of season", true);
+            noSleepingBefore = builder.comment("5999 = Anytime sleeping. 10000 = 10AM. 13000 = 1PM etc.").defineInRange("Disable sleeping between 6:00 and the specified time", 5999, 5999, 23999);
         }
 
         public static ForgeConfigSpec create() {

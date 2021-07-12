@@ -1,6 +1,6 @@
 package uk.joshiejack.simplyseasons.plugins;
 
-import corgitaco.betterweather.BetterWeatherUtil;
+import corgitaco.betterweather.config.BetterWeatherConfig;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,9 +27,9 @@ public class BetterWeatherPlugin implements IModPlugin {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onAttachCapability(AttachCapabilitiesEvent<World> event) {
-        if (BetterWeatherUtil.isOverworld(event.getObject().dimension()))
+        if (BetterWeatherConfig.SEASON_DIMENSIONS.contains(event.getObject().dimension().location().toString()))
             event.addCapability(new ResourceLocation(SimplySeasons.MODID, "seasons"), provider);
     }
 }

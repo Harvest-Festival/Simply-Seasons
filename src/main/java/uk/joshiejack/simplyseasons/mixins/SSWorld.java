@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
+import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
 import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;

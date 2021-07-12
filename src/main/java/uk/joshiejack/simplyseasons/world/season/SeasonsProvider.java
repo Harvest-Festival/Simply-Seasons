@@ -9,7 +9,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.INBTSerializable;
-import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
+import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.world.CalendarDate;

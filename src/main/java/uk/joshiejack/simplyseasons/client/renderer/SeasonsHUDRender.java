@@ -1,9 +1,9 @@
 package uk.joshiejack.simplyseasons.client.renderer;
 
-import com.google.common.collect.Streams;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
@@ -12,9 +12,11 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import uk.joshiejack.penguinlib.client.gui.HUDRenderer;
-import uk.joshiejack.penguinlib.util.helpers.generic.StringHelper;
+import uk.joshiejack.penguinlib.util.helpers.PlayerHelper;
+import uk.joshiejack.penguinlib.util.helpers.StringHelper;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
@@ -42,7 +44,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
         registerSeasonHUD(Season.WINTER);
     }
 
-    private static EnumMap<Season, TranslationTextComponent> TEXT_CACHE = new EnumMap<>(Season.class);
+    private static final EnumMap<Season, TranslationTextComponent> TEXT_CACHE = new EnumMap<>(Season.class);
 
     private static void registerSeasonHUD(Season season) {
         HUD.put(season, new ResourceLocation(SimplySeasons.MODID, "textures/gui/" + season.name().toLowerCase(Locale.ENGLISH) + ".png"));
@@ -56,19 +58,16 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
         } else return null;
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    private boolean hasCalendarInInventory(PlayerEntity player) {
-        if (player.level.getDayTime() % 60 == 0) {
-            //TODO: Switch to Penguin-Lib 0.4
-            hasInInventory = Streams.concat(player.inventory.items.stream(), player.inventory.offhand.stream(), player.inventory.armor.stream())
-                    .anyMatch(stack -> CALENDARS.contains(stack.getItem()));
-        }
+    private final Lazy<Ingredient> CALENDAR = Lazy.of(() -> Ingredient.of(CALENDARS));
 
+    private boolean hasCalendarInInventory(PlayerEntity player) {
+        if (player.level.getDayTime() % 60 == 0)
+            hasInInventory = PlayerHelper.hasInInventory(player, CALENDAR.get(), 1);
         return hasInInventory;
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isEnabled(Minecraft mc) {
         return SSClientConfig.enableHUD.get() && getSeason(Minecraft.getInstance().level) != null
                 && (!SSClientConfig.requireItemInInventoryForHUD.get() || (SSClientConfig.requireItemInInventoryForHUD.get() &&
                 hasCalendarInInventory(Minecraft.getInstance().player)));

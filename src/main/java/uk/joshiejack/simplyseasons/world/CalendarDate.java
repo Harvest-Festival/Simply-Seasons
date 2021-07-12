@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
-import uk.joshiejack.penguinlib.util.helpers.minecraft.TimeHelper;
+import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
 
 import javax.annotation.Nonnull;
 import java.time.DayOfWeek;
