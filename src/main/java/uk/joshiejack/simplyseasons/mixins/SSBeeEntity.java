@@ -65,7 +65,7 @@ public abstract class SSBeeEntity extends AnimalEntity {
      **/
     @Inject(method = "tick", at = @At(value = "TAIL"))
     protected void updateGoals(CallbackInfo ci) {
-        if (!level.isClientSide && level.getDayTime() % 100 == 0
+        if (!level.isClientSide && level.getDayTime() % 1200 == 0
                 && beePollinateGoal != null && findPollinationTargetGoal != null && goToKnownFlowerGoal != null) {
             level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
                     .ifPresent(provider -> {
