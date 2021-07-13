@@ -15,7 +15,6 @@ import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.SaplingGrowTreeEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,10 +36,14 @@ public class SeasonalCrops {
     public static final ITag.INamedTag<Block> INDESTRUCTIBLE = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "indestructible"));
     private static final Map<Block, SeasonPredicate> BLOCKS = Maps.newHashMap();
     public static final Map<Item, SeasonPredicate> ITEMS = new HashMap<>();
-    private static boolean attemptedToDisableSimplySeasonsGrowth = false;
+
+    public static boolean isSimplySeasonsGrowthDisabled() {
+        return SereneSeasonsPlugin.loaded && !SSServerConfig.useSSCropsHandler.get();
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onSeedInteract(PlayerInteractEvent.RightClickBlock event) {
+        if (isSimplySeasonsGrowthDisabled()) return;
         SeasonPredicate predicate = ITEMS.get(event.getItemStack().getItem());
         if (SimplySeasons.SSConfig.disableOutofSeasonPlanting.get() &&
                 predicate != null && !predicate.matches(event.getWorld(), event.getPos())) {
@@ -50,7 +53,7 @@ public class SeasonalCrops {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onCropGrow(BlockEvent.CropGrowEvent.Pre event) {
-        if (!(event.getWorld() instanceof ServerWorld)) return;
+        if (isSimplySeasonsGrowthDisabled() || !(event.getWorld() instanceof ServerWorld)) return;
         SeasonPredicate predicate = BLOCKS.get(event.getState().getBlock());
         if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
                 SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.test(event.getWorld(), event.getPos())) {
@@ -60,7 +63,7 @@ public class SeasonalCrops {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onTreeGrow(SaplingGrowTreeEvent event) {
-        if (!(event.getWorld() instanceof ServerWorld)) return;
+        if (isSimplySeasonsGrowthDisabled() || !(event.getWorld() instanceof ServerWorld)) return;
         SeasonPredicate predicate = BLOCKS.get(event.getWorld().getBlockState(event.getPos()).getBlock());
         if (predicate != null && !predicate.matches((ServerWorld) event.getWorld(), event.getPos()) &&
                 SimplySeasons.SSConfig.cropOutOfSeasonEffect.get().predicate.test(event.getWorld(), event.getPos())) {
@@ -70,7 +73,7 @@ public class SeasonalCrops {
 
     @SubscribeEvent
     public static void onApplyBonemeal(BonemealEvent event) {
-        if (!(event.getWorld() instanceof ServerWorld)) return;
+        if (isSimplySeasonsGrowthDisabled() || !(event.getWorld() instanceof ServerWorld)) return;
         SeasonPredicate predicate = BLOCKS.get(event.getWorld().getBlockState(event.getPos()).getBlock());
         if (predicate != null && !predicate.matches(event.getWorld(), event.getPos())) {
             event.setCanceled(true);
@@ -78,18 +81,7 @@ public class SeasonalCrops {
     }
 
     @SubscribeEvent
-    public static void attemptToDisableSimplySeasonsGrowth(WorldEvent.Load event) {
-        if (!attemptedToDisableSimplySeasonsGrowth
-                && SereneSeasonsPlugin.loaded && !SSServerConfig.useSSCropsHandler.get()) {
-            attemptedToDisableSimplySeasonsGrowth = true;
-            BLOCKS.clear();
-            ITEMS.clear();
-        }
-    }
-
-    @SubscribeEvent
     public static void onDatabaseLoaded(DatabaseLoadedEvent event) {
-        attemptedToDisableSimplySeasonsGrowth = false;
         BLOCKS.clear(); //Reloading
         ITEMS.clear(); //Reloading
         event.table("growth_seasons").rows().forEach(row -> {

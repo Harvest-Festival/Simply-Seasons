@@ -16,7 +16,7 @@ import uk.joshiejack.simplyseasons.world.season.SeasonalCrops;
 public class TooltipRenderer {
     @SubscribeEvent
     public static void onToolTip(ItemTooltipEvent event) {
-        if (!SSClientConfig.enableCropsTooltip.get()) return;
+        if (!SSClientConfig.enableCropsTooltip.get() || SeasonalCrops.isSimplySeasonsGrowthDisabled()) return;
         if (SeasonalCrops.ITEMS.containsKey(event.getItemStack().getItem())) {
             SeasonalCrops.ITEMS.get(event.getItemStack().getItem()).seasons()
                     .filter(season -> SSClientConfig.showWetDryTooltip.get() || season.ordinal() <= Season.WINTER.ordinal())
