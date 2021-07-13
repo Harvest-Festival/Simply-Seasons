@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.plugins.ResourcefulBeesPlugin;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -29,6 +30,7 @@ public abstract class SSBeeHiveTileEntity extends TileEntity {
     @Inject(method = "releaseOccupant", at = @At(value = "HEAD"), cancellable = true)
     protected void releaseOccupant(BlockState blockState, BeehiveTileEntity.Bee bee, @Nullable List<Entity> entity,
                                    BeehiveTileEntity.State state, CallbackInfoReturnable<Boolean> cir) {
+        if (ResourcefulBeesPlugin.loaded) return;
         if (SimplySeasons.SSConfig.enableBeeInactivityInWinter.get()) {
             assert level != null;
             level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
