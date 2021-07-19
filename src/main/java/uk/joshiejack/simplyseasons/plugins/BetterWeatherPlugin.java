@@ -29,7 +29,7 @@ public class BetterWeatherPlugin implements IModPlugin {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onAttachCapability(AttachCapabilitiesEvent<World> event) {
-        if (BetterWeatherConfig.SEASON_DIMENSIONS.contains(event.getObject().dimension().location().toString()))
+        if (!SereneSeasonsPlugin.loaded && BetterWeatherConfig.SEASON_DIMENSIONS.contains(event.getObject().dimension().location().toString()))
             event.addCapability(new ResourceLocation(SimplySeasons.MODID, "seasons"), provider);
     }
 }
