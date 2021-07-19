@@ -12,6 +12,7 @@ import net.minecraftforge.fml.LogicalSide;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Weather;
+import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
 @OnlyIn(Dist.CLIENT)
@@ -20,6 +21,7 @@ public class BlizzardSound {
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.PlayerTickEvent event) {
+        if (BetterWeatherPlugin.loaded) return;
         World world = event.player.level;;
         if (event.side == LogicalSide.CLIENT && event.phase == TickEvent.Phase.END && (world.getDayTime() % 300 == 1 || (!playing && world.isThundering()))) {
             world.getCapability(SSeasonsAPI.WEATHER_CAPABILITY).ifPresent(provider -> {
