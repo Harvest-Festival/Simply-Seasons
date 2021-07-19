@@ -93,14 +93,25 @@ public class SimplySeasons {
     public static class SSConfig {
         public static ForgeConfigSpec.EnumValue<SeasonalCrops.CropOutOfSeasonEffect> cropOutOfSeasonEffect;
         public static ForgeConfigSpec.BooleanValue disableOutofSeasonPlanting;
-        public static ForgeConfigSpec.IntValue noSleepingBefore;
         public static ForgeConfigSpec.BooleanValue enableBeeInactivityInWinter;
+        public static ForgeConfigSpec.IntValue noSleepingBefore;
+        public static ForgeConfigSpec.BooleanValue noSleepingBetweenWakeupAndSunset;
+        public static ForgeConfigSpec.BooleanValue wakePlayerUpAtSunrise;
+        public static ForgeConfigSpec.BooleanValue sleepAtAnytime;
 
         SSConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("Seasons");
             cropOutOfSeasonEffect = builder.defineEnum("Crop out of season effect", SeasonalCrops.CropOutOfSeasonEffect.REPLACE_WITH_JUNK);
             disableOutofSeasonPlanting = builder.define("Disable planting of seeds that are out of season", true);
-            noSleepingBefore = builder.comment("5999 = Anytime sleeping. 10000 = 10AM. 13000 = 1PM etc.").defineInRange("Disable sleeping between 6:00 and the specified time", 5999, 5999, 23999);
             enableBeeInactivityInWinter = builder.define("Enable inactive bees in winter", true);
+
+            builder.pop();
+            builder.push("Sleeping");
+            noSleepingBefore = builder.comment("5999 = Ignore this. 10000 = 10AM. 13000 = 1PM etc.").defineInRange("Disable sleeping between 6:00 and the specified time", 5999, 5999, 23999);
+            noSleepingBetweenWakeupAndSunset = builder.define("Disable sleeping between waking up and sunset", true);
+            wakePlayerUpAtSunrise = builder.define("Wake up at sunrise", false);
+            sleepAtAnytime = builder.define("Sleep at any time", false);
+            builder.pop();
         }
 
         public static ForgeConfigSpec create() {
