@@ -105,6 +105,7 @@ public class SeasonalCrops {
     }
 
     public enum CropOutOfSeasonEffect {
+        NORMAL((w, p) -> false),
         SLOW_GROWTH((w, p) -> w.getRandom().nextFloat() >= 0.01F),
         NO_GROWTH((w, p) -> true),
         REPLACE_WITH_JUNK((w, p) -> {
