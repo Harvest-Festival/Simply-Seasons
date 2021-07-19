@@ -30,9 +30,9 @@ public abstract class SSWorldRenderer {
 
     @Redirect(method = "renderSnowAndRain(Lnet/minecraft/client/renderer/LightTexture;FDDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/TextureManager;bind(Lnet/minecraft/util/ResourceLocation;)V"))
     public void getBlizzardTexture(TextureManager textureManager, ResourceLocation resource) {
-        if (BetterWeatherPlugin.loaded || !resource.equals(SNOW_LOCATION)) return;
-        if (Minecraft.getInstance().level.isThundering())
+        if (BetterWeatherPlugin.loaded || !resource.equals(SNOW_LOCATION) || !Minecraft.getInstance().level.isThundering())
+            textureManager.bind(resource);
+        else
             textureManager.bind(BLIZZARD_LOCATION);
-        else textureManager.bind(resource);
     }
 }
