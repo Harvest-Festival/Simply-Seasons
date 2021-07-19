@@ -21,7 +21,7 @@ public class FogRenderer {
 
     @SubscribeEvent
     public static void onFogDensity(EntityViewRenderEvent.FogDensity event) {
-        if (BetterWeatherPlugin.loaded || SSClientConfig.fogDensity.get() <= 0) return;
+        if (BetterWeatherPlugin.loaded || SSClientConfig.overallFogDensity.get() <= 0) return;
         Minecraft mc = Minecraft.getInstance();
         mc.level.getCapability(SSeasonsAPI.WEATHER_CAPABILITY).ifPresent(provider -> {
             if (!event.getInfo().getBlockAtCamera().getMaterial().isLiquid()) {
@@ -38,13 +38,13 @@ public class FogRenderer {
                 if (isSnow || weather == Weather.FOG) {
                     switch (weather) {
                         case STORM:
-                            fogTarget = SSClientConfig.fogDensity.get() * 4;
+                            fogTarget = SSClientConfig.overallFogDensity.get() * SSClientConfig.blizzardDensityMultiplier.get();
                             break;
                         case RAIN:
-                            fogTarget = SSClientConfig.fogDensity.get();
+                            fogTarget = SSClientConfig.overallFogDensity.get() * SSClientConfig.snowDensityMultiplier.get();
                             break;
                         default:
-                            fogTarget = SSClientConfig.fogDensity.get() * 2;
+                            fogTarget = SSClientConfig.overallFogDensity.get() * SSClientConfig.fogDensityMultiplier.get();
                             break;
                     }
                 } else fogTarget = 0;
