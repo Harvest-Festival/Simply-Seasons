@@ -22,12 +22,18 @@ license="MIT"
 [[dependencies.simplyseasons]]
     modId="penguinlib"
     mandatory=true
-    versionRange="[0.4.1,)"
+    versionRange="[0.4.2,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.simplyseasons]]
     modId="botanypots"
     mandatory=false
     versionRange="[1.16.5-7.1.20,)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.simplyseasons]]
+    modId="morpheus"
+    mandatory=false
+    versionRange="[1.16.5-4.2.70,)"
     ordering="AFTER"
     side="BOTH"

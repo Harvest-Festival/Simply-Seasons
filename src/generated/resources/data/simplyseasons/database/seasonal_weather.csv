@@ -4,10 +4,9 @@ spring,rain,30
 summer,clear,95
 summer,storm,3
 summer,rain,2
-autumn,clear,50
-autumn,rain,40
-autumn,fog,10
+autumn,clear,55
+autumn,rain,44
+autumn,fog,1
 winter,rain,50
-winter,clear,40
+winter,clear,45
 winter,storm,5
-winter,fog,5

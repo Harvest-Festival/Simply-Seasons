@@ -77,13 +77,12 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addSeasonalWeather(Season.SUMMER, Weather.CLEAR, 95);
         addSeasonalWeather(Season.SUMMER, Weather.STORM, 3);
         addSeasonalWeather(Season.SUMMER, Weather.RAIN, 2);
-        addSeasonalWeather(Season.AUTUMN, Weather.CLEAR, 50);
-        addSeasonalWeather(Season.AUTUMN, Weather.RAIN, 40);
-        addSeasonalWeather(Season.AUTUMN, Weather.FOG, 10);
+        addSeasonalWeather(Season.AUTUMN, Weather.CLEAR, 55);
+        addSeasonalWeather(Season.AUTUMN, Weather.RAIN, 44);
+        addSeasonalWeather(Season.AUTUMN, Weather.FOG, 1);
         addSeasonalWeather(Season.WINTER, Weather.RAIN, 50);
-        addSeasonalWeather(Season.WINTER, Weather.CLEAR, 40);
+        addSeasonalWeather(Season.WINTER, Weather.CLEAR, 45);
         addSeasonalWeather(Season.WINTER, Weather.STORM, 5);
-        addSeasonalWeather(Season.WINTER, Weather.FOG, 5);
         addRandomWeather(World.OVERWORLD, Weather.CLEAR, 65);
         addRandomWeather(World.OVERWORLD, Weather.RAIN, 25);
         addRandomWeather(World.OVERWORLD, Weather.STORM, 5);
