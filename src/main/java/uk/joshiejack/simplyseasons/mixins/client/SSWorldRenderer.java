@@ -16,6 +16,7 @@ import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 @Mixin(WorldRenderer.class)
 public abstract class SSWorldRenderer {
     private static final ResourceLocation BLIZZARD_LOCATION = new ResourceLocation(SimplySeasons.MODID, "textures/environment/blizzard.png");
+    private static final ResourceLocation SNOW_LOCATION = new ResourceLocation("textures/environment/snow.png");
 
     @Redirect(method = "renderSnowAndRain(Lnet/minecraft/client/renderer/LightTexture;FDDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/Biome;getTemperature(Lnet/minecraft/util/math/BlockPos;)F"))
     public float getTemperatureSnowAndRain(Biome biome, BlockPos pos) {
@@ -29,7 +30,7 @@ public abstract class SSWorldRenderer {
 
     @Redirect(method = "renderSnowAndRain(Lnet/minecraft/client/renderer/LightTexture;FDDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/TextureManager;bind(Lnet/minecraft/util/ResourceLocation;)V"))
     public void getBlizzardTexture(TextureManager textureManager, ResourceLocation resource) {
-        if (BetterWeatherPlugin.loaded) return;
+        if (BetterWeatherPlugin.loaded || !resource.equals(SNOW_LOCATION)) return;
         if (Minecraft.getInstance().level.isThundering())
             textureManager.bind(BLIZZARD_LOCATION);
         else textureManager.bind(resource);
