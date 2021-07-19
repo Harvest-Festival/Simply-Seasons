@@ -1,6 +1,7 @@
 package uk.joshiejack.simplyseasons.client.renderer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -26,8 +27,9 @@ public class FogRenderer {
         mc.level.getCapability(SSeasonsAPI.WEATHER_CAPABILITY).ifPresent(provider -> {
             if (!event.getInfo().getBlockAtCamera().getMaterial().isLiquid()) {
                 Weather weather = provider.getWeather(mc.level);
-                boolean isSnow = (weather == Weather.RAIN || weather == Weather.STORM) &&
-                        SeasonalWorlds.getTemperature(mc.level, mc.level.getBiome(mc.player.blockPosition()), mc.player.blockPosition()) < 0.15F;
+                BlockPos playerHead = mc.player.blockPosition().above();
+                boolean isSnow = (weather == Weather.RAIN || weather == Weather.STORM) && mc.level.canSeeSky(playerHead) &&
+                        SeasonalWorlds.getTemperature(mc.level, mc.level.getBiome(playerHead), playerHead) < 0.15F;
                 if (fogTarget != fogValue) {
                     if (fogTarget > fogValue)
                         fogValue++;
@@ -50,7 +52,7 @@ public class FogRenderer {
                 } else fogTarget = 0;
 
                 if (fogValue != 0) {
-                    event.setDensity(fogValue/1000F);
+                    event.setDensity(fogValue/10000F);
                     event.setCanceled(true);
                 }
             }
@@ -64,8 +66,9 @@ public class FogRenderer {
         mc.level.getCapability(SSeasonsAPI.WEATHER_CAPABILITY).ifPresent(provider -> {
             if (!event.getInfo().getBlockAtCamera().getMaterial().isLiquid()) {
                 Weather weather = provider.getWeather(mc.level);
+                BlockPos playerHead = mc.player.blockPosition().above();
                 boolean isSnow = (weather == Weather.RAIN || weather == Weather.STORM) &&
-                        SeasonalWorlds.getTemperature(mc.level, mc.level.getBiome(mc.player.blockPosition()), mc.player.blockPosition()) < 0.15F;
+                        SeasonalWorlds.getTemperature(mc.level, mc.level.getBiome(playerHead), playerHead) < 0.15F;
                 if (isSnow) {
                     event.setRed(1F);
                     event.setBlue(1F);

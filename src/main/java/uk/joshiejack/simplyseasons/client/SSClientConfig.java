@@ -10,6 +10,7 @@ public class SSClientConfig {
     public static ForgeConfigSpec.IntValue snowDensityMultiplier;
     public static ForgeConfigSpec.IntValue blizzardDensityMultiplier;
     public static ForgeConfigSpec.IntValue fogDensityMultiplier;
+    public static ForgeConfigSpec.BooleanValue enableBlizzardNoise;
     public static ForgeConfigSpec.BooleanValue seasonalMusic;
     public static ForgeConfigSpec.BooleanValue seasonInDebug;
     public static ForgeConfigSpec.BooleanValue requireItemInInventoryForHUD;
@@ -23,11 +24,12 @@ public class SSClientConfig {
         seasonInDebug = builder.define("Display season in debug menu", true);
         requireItemInInventoryForHUD = builder.define("Require calendar items in inventory to display the HUD", false);
         builder.pop();
-        builder.push("Fog");
+        builder.push("Weather");
+        enableBlizzardNoise = builder.define("Enable blizzard sound effect", true);
         overallFogDensity = builder.comment("Set this to 0 to disable all types of fogs").defineInRange("Fog/Blizzard density", 20, 0, 100);
-        snowDensityMultiplier = builder.defineInRange("Fog density multiplier (Snow)", 1, 0, 10);
-        blizzardDensityMultiplier = builder.defineInRange("Fog density multiplier (Blizzard)", 5, 0, 10);
-        fogDensityMultiplier = builder.defineInRange("Fog density multiplier (Fog)", 2, 0, 10);
+        snowDensityMultiplier = builder.defineInRange("Fog density multiplier (Snow)", 5, 0, 100);
+        blizzardDensityMultiplier = builder.defineInRange("Fog density multiplier (Blizzard)", 25, 0, 100);
+        fogDensityMultiplier = builder.defineInRange("Fog density multiplier (Fog)", 10, 0, 100);
         builder.pop();
     }
 

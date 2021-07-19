@@ -84,6 +84,7 @@ public class SimplySeasons {
         public static final RegistryObject<SoundEvent> SUMMER = createSoundEvent("music.summer");
         public static final RegistryObject<SoundEvent> AUTUMN = createSoundEvent("music.autumn");
         public static final RegistryObject<SoundEvent> WINTER = createSoundEvent("music.winter");
+        public static final RegistryObject<SoundEvent> BLIZZARD = createSoundEvent("blizzard");
 
         private static RegistryObject<SoundEvent> createSoundEvent(@Nonnull String name) {
             return SOUNDS.register(name, () -> new SoundEvent(new ResourceLocation(SimplySeasons.MODID, name)));

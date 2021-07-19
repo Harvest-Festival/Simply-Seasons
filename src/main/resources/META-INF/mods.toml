@@ -6,6 +6,7 @@ license="MIT"
     version="${file.jarVersion}"
     displayName="Simply Seasons"
     authors="joshiejack"
+    credits="Blizzard sound - https://freesound.org/people/kevp888/sounds/573290/"
     description='''Spring, Summer, Autumn, Winter and more!'''
 [[dependencies.simplyseasons]]
     modId="forge"
