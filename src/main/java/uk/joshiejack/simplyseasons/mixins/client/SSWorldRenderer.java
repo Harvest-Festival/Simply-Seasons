@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import uk.joshiejack.simplyseasons.SimplySeasons;
+import uk.joshiejack.simplyseasons.client.SSClientConfig;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
@@ -30,7 +31,7 @@ public abstract class SSWorldRenderer {
 
     @Redirect(method = "renderSnowAndRain(Lnet/minecraft/client/renderer/LightTexture;FDDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/TextureManager;bind(Lnet/minecraft/util/ResourceLocation;)V"))
     public void getBlizzardTexture(TextureManager textureManager, ResourceLocation resource) {
-        if (BetterWeatherPlugin.loaded || !resource.equals(SNOW_LOCATION) || !Minecraft.getInstance().level.isThundering())
+        if (BetterWeatherPlugin.loaded || !resource.equals(SNOW_LOCATION) || !Minecraft.getInstance().level.isThundering() || !SSClientConfig.enableBlizzardTexture.get())
             textureManager.bind(resource);
         else
             textureManager.bind(BLIZZARD_LOCATION);

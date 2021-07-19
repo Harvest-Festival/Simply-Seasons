@@ -11,6 +11,7 @@ public class SSClientConfig {
     public static ForgeConfigSpec.IntValue blizzardDensityMultiplier;
     public static ForgeConfigSpec.IntValue fogDensityMultiplier;
     public static ForgeConfigSpec.BooleanValue enableBlizzardNoise;
+    public static ForgeConfigSpec.BooleanValue enableBlizzardTexture;
     public static ForgeConfigSpec.BooleanValue seasonalMusic;
     public static ForgeConfigSpec.BooleanValue seasonInDebug;
     public static ForgeConfigSpec.BooleanValue requireItemInInventoryForHUD;
@@ -26,6 +27,7 @@ public class SSClientConfig {
         builder.pop();
         builder.push("Weather");
         enableBlizzardNoise = builder.define("Enable blizzard sound effect", true);
+        enableBlizzardTexture = builder.define("Enable blizzard texture", true);
         overallFogDensity = builder.comment("Set this to 0 to disable all types of fogs").defineInRange("Fog/Blizzard density", 20, 0, 100);
         snowDensityMultiplier = builder.defineInRange("Fog density multiplier (Snow)", 5, 0, 100);
         blizzardDensityMultiplier = builder.defineInRange("Fog density multiplier (Blizzard)", 25, 0, 100);
