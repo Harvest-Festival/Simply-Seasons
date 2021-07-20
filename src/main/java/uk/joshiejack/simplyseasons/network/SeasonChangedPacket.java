@@ -10,6 +10,8 @@ import uk.joshiejack.penguinlib.network.PenguinPacket;
 import uk.joshiejack.penguinlib.util.PenguinLoader;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
+import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
+import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 
 @PenguinLoader.Packet(NetworkDirection.PLAY_TO_CLIENT)
 public class SeasonChangedPacket extends PenguinPacket {
@@ -37,7 +39,8 @@ public class SeasonChangedPacket extends PenguinPacket {
         world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
                 .ifPresent(provider -> {
                     provider.setSeason(world, season);
-                    Minecraft.getInstance().levelRenderer.allChanged();
+                    if (!SereneSeasonsPlugin.loaded && !BetterWeatherPlugin.loaded)
+                        Minecraft.getInstance().levelRenderer.allChanged();
                 });
     }
 }

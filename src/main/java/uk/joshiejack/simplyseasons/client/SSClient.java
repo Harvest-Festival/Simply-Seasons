@@ -18,6 +18,8 @@ import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.renderer.BlizzardSound;
 import uk.joshiejack.simplyseasons.client.renderer.SeasonsHUDRender;
+import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
+import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +50,8 @@ public class SSClient {
                 event.getWorld().getCapability(SSeasonsAPI.SEASONS_CAPABILITY)
                         .ifPresent(provider -> {
                             provider.recalculate(event.getWorld());
-                            Minecraft.getInstance().levelRenderer.allChanged();
+                            if (!SereneSeasonsPlugin.loaded && !BetterWeatherPlugin.loaded)
+                                Minecraft.getInstance().levelRenderer.allChanged();
                         });
         }
     }

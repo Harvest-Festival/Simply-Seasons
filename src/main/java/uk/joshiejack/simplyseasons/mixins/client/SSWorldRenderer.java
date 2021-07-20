@@ -14,7 +14,7 @@ import uk.joshiejack.simplyseasons.client.SSClientConfig;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
-@Mixin(WorldRenderer.class)
+@Mixin(value = WorldRenderer.class, priority = 999)
 public abstract class SSWorldRenderer {
     private static final ResourceLocation BLIZZARD_LOCATION = new ResourceLocation(SimplySeasons.MODID, "textures/environment/blizzard.png");
     private static final ResourceLocation SNOW_LOCATION = new ResourceLocation("textures/environment/snow.png");
