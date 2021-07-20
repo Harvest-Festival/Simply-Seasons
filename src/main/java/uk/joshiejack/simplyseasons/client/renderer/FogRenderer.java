@@ -9,10 +9,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
+import uk.joshiejack.simplyseasons.api.Weather;
 import uk.joshiejack.simplyseasons.client.SSClientConfig;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
-import uk.joshiejack.simplyseasons.api.Weather;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID, value = Dist.CLIENT)

@@ -22,7 +22,7 @@ public class BlizzardSound {
     @SubscribeEvent
     public void onWorldTick(TickEvent.PlayerTickEvent event) {
         if (BetterWeatherPlugin.loaded) return;
-        World world = event.player.level;;
+        World world = event.player.level;
         if (event.side == LogicalSide.CLIENT && event.phase == TickEvent.Phase.END && (world.getDayTime() % 300 == 1 || (!playing && world.isThundering()))) {
             world.getCapability(SSeasonsAPI.WEATHER_CAPABILITY).ifPresent(provider -> {
                 Weather weather = provider.getWeather(world);

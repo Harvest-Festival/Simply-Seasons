@@ -19,6 +19,7 @@ import uk.joshiejack.simplyseasons.api.Weather;
 import java.util.Locale;
 import java.util.Objects;
 
+@SuppressWarnings("SameParameterValue")
 public class SSDatabase extends AbstractDatabaseProvider {
     public SSDatabase(DataGenerator gen) {
         super(gen, SimplySeasons.MODID);

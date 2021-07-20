@@ -21,8 +21,8 @@ public abstract class AbstractWeatherProvider implements IWeatherProvider, INBTS
     private final LazyOptional<AbstractWeatherProvider> capability;
     protected Weather current;
     protected Weather forecast;
-    protected int updateFrequency;
-    protected int changeChance;
+    protected final int updateFrequency;
+    protected final int changeChance;
 
     public AbstractWeatherProvider(Weather defaultWeather, int frequency, int chance) {
         this.updateFrequency = frequency;

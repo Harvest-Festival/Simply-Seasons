@@ -95,7 +95,7 @@ public class SeasonPredicate {
     }
 
     public static class Builder {
-        private List<Season> seasons = new ArrayList<>();
+        private final List<Season> seasons = new ArrayList<>();
 
         public static Builder season() {
             return new Builder();

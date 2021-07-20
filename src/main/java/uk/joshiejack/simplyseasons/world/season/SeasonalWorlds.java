@@ -33,7 +33,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonalWorlds {
     private static final Map<RegistryKey<World>, ISeasonProvider> PROVIDERS = new HashMap<>();
-    public static ITag.INamedTag<Block> SPRING_NO_BONEMEAL_BLOCKS = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "spring_no_bonemeal"));
+    public static final ITag.INamedTag<Block> SPRING_NO_BONEMEAL_BLOCKS = BlockTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "spring_no_bonemeal"));
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onAttachCapability(AttachCapabilitiesEvent<World> event) {

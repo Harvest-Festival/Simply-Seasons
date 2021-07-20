@@ -14,7 +14,7 @@ import java.util.Locale;
 @Mod.EventBusSubscriber(modid = SimplySeasons.MODID)
 public class SeasonData {
     private static final EnumMap<Season, SeasonData> DATA = new EnumMap<>(Season.class);
-    private static SeasonData EMPTY = new SeasonData(TextFormatting.WHITE, 0F, 0, 0, 0, 0, 0);
+    private static final SeasonData EMPTY = new SeasonData(TextFormatting.WHITE, 0F, 0, 0, 0, 0, 0);
     public final TextFormatting hud;
     public final int leaves;
     public final int grass;
