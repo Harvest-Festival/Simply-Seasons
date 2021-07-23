@@ -38,3 +38,9 @@ license="MIT"
     versionRange="[1.16.5-4.2.70,)"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.simplyseasons]]
+    modId="betterweather"
+    mandatory=false
+    versionRange="[2.0,)"
+    ordering="AFTER"
+    side="BOTH"

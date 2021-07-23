@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @PenguinLoader("morpheus")
 public class MorpheusPlugin implements IModPlugin {
-    private long getTimeToSunrise(ServerWorld world) {
+    private long getDayTime(ServerWorld world) {
         long l = world.getDayTime() + 24000L;
         return ForgeEventFactory.onSleepFinished(world, l - l % 24000L, world.getDayTime());
     }
@@ -24,7 +24,7 @@ public class MorpheusPlugin implements IModPlugin {
         try {
             Morpheus.register.registerHandler(() -> {
                 ServerWorld world = Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD)).getWorldServer();
-                ((ServerWorldInfo)world.getLevelData()).setDayTime(world.getLevelData().getDayTime() + getTimeToSunrise(world));
+                ((ServerWorldInfo)world.getLevelData()).setDayTime(getDayTime(world));
                 world.players().stream().filter(LivingEntity::isSleeping).forEach(p -> p.stopSleepInBed(false, false));
             }, ServerWorld.OVERWORLD);
         } catch (Exception ex) {

@@ -61,8 +61,12 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     private final Lazy<Ingredient> CALENDAR = Lazy.of(() -> Ingredient.of(CALENDARS));
 
     private boolean hasCalendarInInventory(PlayerEntity player) {
-        if (player.level.getDayTime() % 60 == 0)
-            hasInInventory = PlayerHelper.hasInInventory(player, CALENDAR.get(), 1);
+        if (player.level.getDayTime() % 60 == 0) {
+            try {
+                hasInInventory = PlayerHelper.hasInInventory(player, CALENDAR.get(), 1);
+            } catch (Exception ex) { hasInInventory = false; }
+        }
+
         return hasInInventory;
     }
 
