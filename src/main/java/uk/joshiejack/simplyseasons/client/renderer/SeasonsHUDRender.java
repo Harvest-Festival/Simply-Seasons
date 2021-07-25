@@ -1,6 +1,7 @@
 package uk.joshiejack.simplyseasons.client.renderer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.Ingredient;
@@ -33,21 +34,19 @@ import java.util.Locale;
 @SuppressWarnings("unused, ConstantConditions")
 public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     public static final ITag.INamedTag<Item> CALENDARS = ItemTags.createOptional(new ResourceLocation(SimplySeasons.MODID, "calendars"));
-    public static final CalendarDate DATE = new CalendarDate();
+    private static final EnumMap<Season, TranslationTextComponent> TEXT_CACHE = new EnumMap<>(Season.class);
+    private final EnumMap<Season, ResourceLocation> textures = new EnumMap<>(Season.class);
+    private final Lazy<Ingredient> calendar = Lazy.of(() -> Ingredient.of(CALENDARS));
+    private final CalendarDate date = new CalendarDate();
     private boolean hasInInventory;
 
-    private static final EnumMap<Season, ResourceLocation> HUD = new EnumMap<>(Season.class);
-    static {
-        registerSeasonHUD(Season.SPRING);
-        registerSeasonHUD(Season.SUMMER);
-        registerSeasonHUD(Season.AUTUMN);
-        registerSeasonHUD(Season.WINTER);
+    public SeasonsHUDRender() {
+        for (Season season: Season.MAIN)
+            textures.put(season, new ResourceLocation(SimplySeasons.MODID, "textures/gui/" + season.name().toLowerCase(Locale.ENGLISH) + ".png"));
     }
 
-    private static final EnumMap<Season, TranslationTextComponent> TEXT_CACHE = new EnumMap<>(Season.class);
-
-    private static void registerSeasonHUD(Season season) {
-        HUD.put(season, new ResourceLocation(SimplySeasons.MODID, "textures/gui/" + season.name().toLowerCase(Locale.ENGLISH) + ".png"));
+    public void recalculateDate(ClientWorld level) {
+        date.update(level);
     }
 
     @Nullable
@@ -58,12 +57,11 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
         } else return null;
     }
 
-    private final Lazy<Ingredient> CALENDAR = Lazy.of(() -> Ingredient.of(CALENDARS));
 
     private boolean hasCalendarInInventory(PlayerEntity player) {
         if (player.level.getDayTime() % 60 == 0) {
             try {
-                hasInInventory = PlayerHelper.hasInInventory(player, CALENDAR.get(), 1);
+                hasInInventory = PlayerHelper.hasInInventory(player, calendar.get(), 1);
             } catch (Exception ex) { hasInInventory = false; }
         }
 
@@ -79,7 +77,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
 
     @Override
     public ResourceLocation getTexture(Minecraft mc) {
-        return HUD.get(getSeason(mc.level));
+        return textures.get(getSeason(mc.level));
     }
 
     public static TranslationTextComponent getName(Season season) {
@@ -90,7 +88,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     public ITextComponent getHeader(Minecraft mc) {
         Season season = getSeason(mc.level);
         SeasonData data = SeasonData.get(season);
-        if (mc.level.getDayTime() %60 == 0 || !SeasonsHUDRender.DATE.isSet()) SeasonsHUDRender.DATE.update(mc.level);
-        return StringHelper.format(SimplySeasons.MODID + ".hud", getName(season), DATE.getDay()).withStyle(data.hud);
+        if (mc.level.getDayTime() %60 == 0 || !date.isSet()) date.update(mc.level);
+        return StringHelper.format(SimplySeasons.MODID + ".hud", getName(season), date.getDay()).withStyle(data.hud);
     }
 }

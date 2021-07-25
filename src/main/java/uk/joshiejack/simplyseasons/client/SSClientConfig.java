@@ -23,7 +23,7 @@ public class SSClientConfig {
         showWetDryTooltip = builder.define("Show wet/dry tooltip", false);
         seasonalMusic = builder.define("Enable seasonal music", false);
         seasonInDebug = builder.define("Display season in debug menu", true);
-        requireItemInInventoryForHUD = builder.define("Require calendar items in inventory to display the HUD", false);
+        requireItemInInventoryForHUD = builder.comment("This config option requires Enable season HUD to be true. If it is false it will not work.").define("Require calendar items in inventory to display the HUD", false);
         builder.pop();
         builder.push("Weather");
         enableBlizzardNoise = builder.define("Enable blizzard sound effect", true);
