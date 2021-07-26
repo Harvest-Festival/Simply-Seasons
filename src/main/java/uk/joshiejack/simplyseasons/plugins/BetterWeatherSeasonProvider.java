@@ -7,6 +7,7 @@ import corgitaco.betterweather.season.SeasonContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import uk.joshiejack.penguinlib.util.helpers.MathsHelper;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.world.season.AbstractSeasonsProvider;
@@ -17,10 +18,22 @@ import java.util.Set;
 
 public class BetterWeatherSeasonProvider extends AbstractSeasonsProvider {
     private static final BiMap<corgitaco.betterweather.api.season.Season.Key, Season> SEASON_MAPPER = HashBiMap.create();
+
     static {
         for (corgitaco.betterweather.api.season.Season.Key season : corgitaco.betterweather.api.season.Season.Key.values()) {
             SEASON_MAPPER.put(season, Season.valueOf(season.name()));
         }
+    }
+
+    @Override
+    public int getDay(World world) {
+        corgitaco.betterweather.api.season.Season season = corgitaco.betterweather.api.season.Season.getSeason(world);
+        if (season != null) {
+            return 1 + MathsHelper.convertRange(season.getSeasonStartTime(), (season.getSeasonStartTime() + (season.getYearLength() / 4)),
+                    0, (int) Math.ceil((double) season.getYearLength() / 24000D), season.getCurrentYearTime());
+        }
+
+        return super.getDay(world);
     }
 
     @Override
@@ -33,10 +46,11 @@ public class BetterWeatherSeasonProvider extends AbstractSeasonsProvider {
     public void setSeason(World world, Season season) {
         if (world.isClientSide) return;
         try {
-            SeasonContext seasonContext = ((BetterWeatherWorldData)world).getSeasonContext();
+            SeasonContext seasonContext = ((BetterWeatherWorldData) world).getSeasonContext();
             if (seasonContext != null)
-                seasonContext.setSeason((ServerWorld) world, ((ServerWorld)world).players(), SEASON_MAPPER.inverse().get(season), seasonContext.getPhase());
-        } catch (Exception ignored) {}
+                seasonContext.setSeason((ServerWorld) world, ((ServerWorld) world).players(), SEASON_MAPPER.inverse().get(season), seasonContext.getPhase());
+        } catch (Exception ignored) {
+        }
     }
 
     @Override

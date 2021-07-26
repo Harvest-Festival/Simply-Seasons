@@ -14,7 +14,7 @@ import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.SSClient;
 import uk.joshiejack.simplyseasons.client.SSClientConfig;
 
-@Mixin(MusicTicker.class)
+@Mixin(value = MusicTicker.class, priority = 999)
 public class SSMusicTicker {
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getSituationalMusic()Lnet/minecraft/client/audio/BackgroundMusicSelector;"))
     public BackgroundMusicSelector addSeasonalMusic(Minecraft minecraft) {

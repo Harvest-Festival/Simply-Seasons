@@ -41,7 +41,7 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     private boolean hasInInventory;
 
     public SeasonsHUDRender() {
-        for (Season season: Season.MAIN)
+        for (Season season : Season.MAIN)
             textures.put(season, new ResourceLocation(SimplySeasons.MODID, "textures/gui/" + season.name().toLowerCase(Locale.ENGLISH) + ".png"));
     }
 
@@ -62,7 +62,9 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
         if (player.level.getDayTime() % 60 == 0) {
             try {
                 hasInInventory = PlayerHelper.hasInInventory(player, calendar.get(), 1);
-            } catch (Exception ex) { hasInInventory = false; }
+            } catch (Exception ex) {
+                hasInInventory = false;
+            }
         }
 
         return hasInInventory;
@@ -88,7 +90,17 @@ public class SeasonsHUDRender extends HUDRenderer.HUDRenderData {
     public ITextComponent getHeader(Minecraft mc) {
         Season season = getSeason(mc.level);
         SeasonData data = SeasonData.get(season);
-        if (mc.level.getDayTime() %60 == 0 || !date.isSet()) date.update(mc.level);
+        if (mc.level.getDayTime() % 60 == 0 || !date.isSet()) date.update(mc.level);
         return StringHelper.format(SimplySeasons.MODID + ".hud", getName(season), date.getDay()).withStyle(data.hud);
+    }
+
+    @Override
+    public int getClockX() {
+        return isEnabled(Minecraft.getInstance()) ? super.getClockX() : 8;
+    }
+
+    @Override
+    public int getClockY() {
+        return isEnabled(Minecraft.getInstance()) ? super.getClockY() : 5;
     }
 }

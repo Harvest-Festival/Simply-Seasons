@@ -23,7 +23,7 @@ license="MIT"
 [[dependencies.simplyseasons]]
     modId="penguinlib"
     mandatory=true
-    versionRange="[0.4.2,)"
+    versionRange="[0.4.3,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.simplyseasons]]

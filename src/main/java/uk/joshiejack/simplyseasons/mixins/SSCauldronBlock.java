@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
-@Mixin(CauldronBlock.class)
+@Mixin(value = CauldronBlock.class, priority = 999)
 public class SSCauldronBlock {
     /**
      * Overwrites the cauldron handleRain method

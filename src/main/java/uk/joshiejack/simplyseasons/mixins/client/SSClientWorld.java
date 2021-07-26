@@ -21,7 +21,7 @@ import uk.joshiejack.simplyseasons.world.season.SeasonData;
 
 import java.util.function.Supplier;
 
-@Mixin(ClientWorld.class)
+@Mixin(value = ClientWorld.class, priority = 999)
 public abstract class SSClientWorld extends World {
     protected SSClientWorld(ISpawnWorldInfo info, RegistryKey<World> key, DimensionType type,
                             Supplier<IProfiler> profiler, boolean clientSide, boolean debug, long biomeZoomSeed) {

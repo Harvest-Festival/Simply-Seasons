@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
-@Mixin(BeehiveTileEntity.class)
+@Mixin(value = BeehiveTileEntity.class, priority = 999)
 public abstract class SSBeeHiveTileEntity extends TileEntity {
     public SSBeeHiveTileEntity(TileEntityType<?> type) {
         super(type);

@@ -18,7 +18,7 @@ import uk.joshiejack.simplyseasons.plugins.ResourcefulBeesPlugin;
 
 import java.util.Set;
 
-@Mixin(BeeEntity.class)
+@Mixin(value = BeeEntity.class, priority = 999)
 public abstract class SSBeeEntity extends AnimalEntity {
     @Shadow
     private BeeEntity.PollinateGoal beePollinateGoal;

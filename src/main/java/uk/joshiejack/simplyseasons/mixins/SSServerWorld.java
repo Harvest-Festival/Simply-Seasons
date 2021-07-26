@@ -27,7 +27,7 @@ import uk.joshiejack.simplyseasons.world.season.SeasonalWorlds;
 
 import java.util.function.Supplier;
 
-@Mixin(ServerWorld.class)
+@Mixin(value = ServerWorld.class, priority = 999)
 public abstract class SSServerWorld extends World {
     private static final CalendarDate DATE = new CalendarDate();
 

@@ -25,7 +25,6 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
     private final int length;
     private Season season;
 
-
     public SeasonsProvider(Season... seasons) {
         this.seasons = seasons;
         this.length = seasons.length;

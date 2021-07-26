@@ -10,11 +10,13 @@ public class SSClientConfig {
     public static ForgeConfigSpec.IntValue snowDensityMultiplier;
     public static ForgeConfigSpec.IntValue blizzardDensityMultiplier;
     public static ForgeConfigSpec.IntValue fogDensityMultiplier;
+    public static ForgeConfigSpec.IntValue dryFogDensityMultiplier;
     public static ForgeConfigSpec.BooleanValue enableBlizzardNoise;
     public static ForgeConfigSpec.BooleanValue enableBlizzardTexture;
     public static ForgeConfigSpec.BooleanValue seasonalMusic;
     public static ForgeConfigSpec.BooleanValue seasonInDebug;
     public static ForgeConfigSpec.BooleanValue requireItemInInventoryForHUD;
+    public static ForgeConfigSpec.EnumValue<DryFog> dryFogSetting;
 
     SSClientConfig(ForgeConfigSpec.Builder builder) {
         builder.push("Information");
@@ -32,10 +34,16 @@ public class SSClientConfig {
         snowDensityMultiplier = builder.defineInRange("Fog density multiplier (Snow)", 5, 0, 100);
         blizzardDensityMultiplier = builder.defineInRange("Fog density multiplier (Blizzard)", 25, 0, 100);
         fogDensityMultiplier = builder.defineInRange("Fog density multiplier (Fog)", 10, 0, 100);
+        dryFogDensityMultiplier = builder.defineInRange("Fog density multiplier (Dry Fog)", 15, 0, 100);
+        dryFogSetting = builder.defineEnum("Dry biomes fog style", DryFog.SANDY);
         builder.pop();
     }
 
     public static ForgeConfigSpec create() {
         return new ForgeConfigSpec.Builder().configure(SSClientConfig::new).getValue();
+    }
+
+    public enum DryFog {
+        OFF, STANDARD, SANDY
     }
 }

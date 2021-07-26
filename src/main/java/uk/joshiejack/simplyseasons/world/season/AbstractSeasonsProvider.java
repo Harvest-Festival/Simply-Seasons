@@ -12,8 +12,8 @@ import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
 import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
-import uk.joshiejack.simplyseasons.network.DateChangedPacket;
 import uk.joshiejack.simplyseasons.network.SeasonChangedPacket;
+import uk.joshiejack.simplyseasons.world.CalendarDate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,14 +28,17 @@ public abstract class AbstractSeasonsProvider implements ISeasonProvider {
     private long previousElapsed;
 
     @Override
+    public int getDay(World world) {
+        return 1 + CalendarDate.getDay(world);
+    }
+
+    @Override
     public void recalculate(World world) {
         if (!world.isClientSide) {
             Season season = getSeason(world);
-            if (previousSeason != season)
-                PenguinNetwork.sendToDimension(new SeasonChangedPacket(season), world.dimension());
             long elapsed = TimeHelper.getElapsedDays(world.getDayTime());
-            if (elapsed != previousElapsed)
-                PenguinNetwork.sendToDimension(new DateChangedPacket(), world.dimension());
+            if (elapsed != previousElapsed || previousSeason != season)
+                PenguinNetwork.sendToDimension(new SeasonChangedPacket(season, previousSeason != season), world.dimension());
             previousElapsed = elapsed;
             previousSeason = getSeason(world);
         }

@@ -142,14 +142,14 @@ dependencies {
     compileOnly fg.deobf("curse.maven:better_weather-400714:${better_weather_version}")
     //runtimeOnly fg.deobf("curse.maven:better_weather-400714:${better_weather_version}")
     compileOnly fg.deobf("curse.maven:morpheus-69118:${morpheus_version}")
-    runtimeOnly fg.deobf("curse.maven:morpheus-69118:${morpheus_version}")
+    //runtimeOnly fg.deobf("curse.maven:morpheus-69118:${morpheus_version}")
     compileOnly fg.deobf("me.shedaniel:architectury-forge:${architectury_version}")
     compileOnly fg.deobf("dev.latvian.mods:rhino:${rhino_version}")
     compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
     compileOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${bookshelf_version}")
-    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${bookshelf_version}")
+    //runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${bookshelf_version}")
     compileOnly fg.deobf("net.darkhax.botanybots:BotanyPots-1.16.5:${botanypots_version}")
-    runtimeOnly fg.deobf("net.darkhax.botanybots:BotanyPots-1.16.5:${botanypots_version}")
+    //runtimeOnly fg.deobf("net.darkhax.botanybots:BotanyPots-1.16.5:${botanypots_version}")
 
 }
 

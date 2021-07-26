@@ -6,6 +6,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 /** The season provider is attached to a world as a capability **/
 public interface ISeasonProvider extends ILocalizedSeasonProvider, ICapabilityProvider {
     /**
+     * Return the current day of the season that it is
+     * @param world the world
+     * @return  the current day
+     */
+    int getDay(World world);
+
+    /**
      *  Grab the season for the entire world location.
      *
      * @param   world   the world

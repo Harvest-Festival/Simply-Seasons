@@ -8,7 +8,6 @@ import uk.joshiejack.penguinlib.network.PenguinPacket;
 import uk.joshiejack.penguinlib.util.PenguinLoader;
 import uk.joshiejack.simplyseasons.client.SSClient;
 
-@SuppressWarnings("ConstantConditions")
 @PenguinLoader.Packet(NetworkDirection.PLAY_TO_CLIENT)
 public class DateChangedPacket extends PenguinPacket {
     public DateChangedPacket() {}

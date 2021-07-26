@@ -2,6 +2,7 @@ package uk.joshiejack.simplyseasons.plugins;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import sereneseasons.api.season.ISeasonState;
 import sereneseasons.api.season.SeasonHelper;
 import sereneseasons.handler.season.SeasonHandler;
 import sereneseasons.season.SeasonSavedData;
@@ -21,13 +22,18 @@ public class SereneSeasonsSeasonProvider extends AbstractSeasonsProvider {
     }
 
     @Override
+    public int getDay(World world) {
+        ISeasonState state = SeasonHelper.getSeasonState(world);
+        return 1 + ((state.getDay()) % (state.getSeasonDuration() / state.getDayDuration()));
+    }
+
+    @Override
     public Season getSeason(World world) {
         return SEASON_MAPPER.get(SeasonHelper.getSeasonState(world).getSeason());
     }
 
     @Override
     public void setSeason(World world, Season season) {
-        //TODO: Use command code instead
         try {
             SeasonSavedData seasonData = SeasonHandler.getSeasonSavedData(world);
             seasonData.seasonCycleTicks = SeasonTime.ZERO.getSubSeasonDuration() * (season.ordinal() * 3);

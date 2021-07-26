@@ -3,8 +3,11 @@ package uk.joshiejack.simplyseasons.world;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
 import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
+import uk.joshiejack.simplyseasons.api.ISeasonProvider;
+import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 
 import javax.annotation.Nonnull;
 import java.time.DayOfWeek;
@@ -45,7 +48,10 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
     public void update(World world) {
         set = true;
         weekday = TimeHelper.getWeekday(world.getDayTime());
-        monthday = 1 + getDay(world);
+        LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
+        if (optional.isPresent() && optional.resolve().isPresent())
+            monthday = optional.resolve().get().getDay(world);
+        else monthday = 1 + getDay(world);
         year = 1 + getYear(world);
     }
 

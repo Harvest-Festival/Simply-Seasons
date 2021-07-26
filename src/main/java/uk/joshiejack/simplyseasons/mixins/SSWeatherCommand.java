@@ -11,7 +11,7 @@ import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
 
-@Mixin(WeatherCommand.class)
+@Mixin(value = WeatherCommand.class, priority = 999)
 public class SSWeatherCommand {
     @Inject(method = "setRain", at = @At("HEAD"), cancellable = true)
     private static void setRainOverride(CommandSource source, int time, CallbackInfoReturnable<Integer> ci) {
