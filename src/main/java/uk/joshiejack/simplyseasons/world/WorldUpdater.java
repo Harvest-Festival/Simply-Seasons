@@ -44,7 +44,7 @@ public class WorldUpdater {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onNewDay(NewDayEvent event) { //Force an update when the day ticks over, so it happens instantly
-        PenguinNetwork.sendToDimension(new DateChangedPacket(), event.getLevel());
+        PenguinNetwork.sendToDimension(event.getLevel(), new DateChangedPacket());
     }
 
     @SubscribeEvent

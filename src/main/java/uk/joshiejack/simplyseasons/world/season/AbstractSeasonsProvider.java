@@ -24,7 +24,7 @@ public abstract class AbstractSeasonsProvider implements ISeasonProvider {
             Season season = getSeason(world);
             long elapsed = TimeHelper.getElapsedDays(world.getDayTime());
             if (elapsed != previousElapsed || previousSeason != season)
-                PenguinNetwork.sendToDimension(new SeasonChangedPacket(season, previousSeason != season), (ServerLevel) world);
+                PenguinNetwork.sendToDimension((ServerLevel) world, new SeasonChangedPacket(season, previousSeason != season));
             previousElapsed = elapsed;
             previousSeason = getSeason(world);
         }

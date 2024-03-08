@@ -44,7 +44,7 @@ public abstract class AbstractWeatherProvider implements IWeatherProvider {
                 sWorld.setWeatherParameters(0, Integer.MAX_VALUE, true, false);
             else if (current == Weather.STORM)
                 sWorld.setWeatherParameters(0, Integer.MAX_VALUE, true, true);
-            PenguinNetwork.sendToDimension(new WeatherChangedPacket(current), (ServerLevel) world);
+            PenguinNetwork.sendToDimension((ServerLevel) world, new WeatherChangedPacket(current));
             SSSavedData.get(sWorld).setDirty();
         }
     }
