@@ -1,35 +1,46 @@
 package uk.joshiejack.simplyseasons.network;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkDirection;
-import uk.joshiejack.penguinlib.network.PenguinPacket;
-import uk.joshiejack.penguinlib.util.PenguinLoader;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
+import uk.joshiejack.penguinlib.PenguinLib;
+import uk.joshiejack.penguinlib.network.packet.PenguinPacket;
+import uk.joshiejack.penguinlib.util.registry.Packet;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Weather;
 
-@PenguinLoader.Packet(NetworkDirection.PLAY_TO_CLIENT)
-public class WeatherChangedPacket extends PenguinPacket {
-    private Weather weather;
+@Packet(PacketFlow.CLIENTBOUND)
+public class WeatherChangedPacket implements PenguinPacket {
+    public static final ResourceLocation ID = PenguinLib.prefix("weather_changed");
 
-    public WeatherChangedPacket() {}
+    @Override
+    public @NotNull ResourceLocation id() {
+        return ID;
+    }
+
+
+    private final Weather weather;
+
     public WeatherChangedPacket(Weather weather) {
         this.weather = weather;
     }
 
-    @Override
-    public void encode(PacketBuffer to) {
-        to.writeByte(weather.ordinal());
-    }
-
-    @Override
-    public void decode(PacketBuffer from) {
+    @SuppressWarnings("unused")
+    public WeatherChangedPacket(FriendlyByteBuf from) {
         weather = Weather.values()[from.readByte()];
     }
 
     @Override
-    public void handle(PlayerEntity player) {
-        player.level.getCapability(SSeasonsAPI.WEATHER_CAPABILITY)
-                .ifPresent(provider -> provider.setWeather(player.level, weather));
+    public void write(FriendlyByteBuf to) {
+        to.writeByte(weather.ordinal());
+    }
+
+
+    @Override
+    public void handle(Player player) {
+        SSeasonsAPI.instance().getWeatherProvider(player.level().dimension())
+                .ifPresent((provider) -> provider.setWeather(player.level(), weather));
     }
 }

@@ -1,11 +1,11 @@
 package uk.joshiejack.simplyseasons.data;
 
-import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraft.data.PackOutput;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 
 public class SSLanguage extends LanguageProvider {
-    public SSLanguage(DataGenerator gen) {
+    public SSLanguage(PackOutput gen) {
         super(gen, SimplySeasons.MODID, "en_us");
     }
 

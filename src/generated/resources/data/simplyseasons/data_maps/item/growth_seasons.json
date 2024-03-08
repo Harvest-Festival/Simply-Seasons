@@ -1,0 +1,15 @@
+{
+  "values": {
+    "minecraft:cherry_sapling": {
+      "seasons": [
+        "SUMMER"
+      ]
+    },
+    "minecraft:mangrove_propagule": {
+      "seasons": [
+        "SPRING",
+        "SUMMER"
+      ]
+    }
+  }
+}

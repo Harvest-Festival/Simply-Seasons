@@ -1,1 +1,1 @@
-uk.joshiejack.simplyseasons.plugins.KubeJSPlugin
+uk.joshiejack.simplyseasons.plugin.KubeJSPlugin

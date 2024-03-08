@@ -1,11 +1,10 @@
 package uk.joshiejack.simplyseasons.world;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import uk.joshiejack.penguinlib.data.TimeUnitRegistry;
-import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
+import uk.joshiejack.penguinlib.util.helper.TimeHelper;
 import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 
@@ -13,18 +12,18 @@ import javax.annotation.Nonnull;
 import java.time.DayOfWeek;
 import java.util.Objects;
 
-public class CalendarDate implements INBTSerializable<CompoundNBT> {
+public class CalendarDate implements INBTSerializable<CompoundTag> {
     public static final int DAYS_PER_SEASON = 7;
     public static boolean isSinglePlayer;
     private DayOfWeek weekday = DayOfWeek.MONDAY;
-    private int monthday = 1;
+    private int dayOfMonth = 1;
     private int year = 1;
     private boolean set;
 
     public CalendarDate() {}
-    public CalendarDate(DayOfWeek weekday, int monthday, int year) {
+    public CalendarDate(DayOfWeek weekday, int dayOfMonth, int year) {
         this.weekday = weekday;
-        this.monthday = monthday;
+        this.dayOfMonth = dayOfMonth;
         this.year = year;
     }
 
@@ -38,54 +37,58 @@ public class CalendarDate implements INBTSerializable<CompoundNBT> {
     }
 
     public int getDay() {
-        return monthday;
+        return dayOfMonth;
     }
 
     public int getYear() {
         return year;
     }
 
-    public void update(World world) {
+    public void update(Level world) {
         set = true;
-        weekday = TimeHelper.getWeekday(world.getDayTime());
-        LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
-        if (optional.isPresent() && optional.resolve().isPresent())
-            monthday = optional.resolve().get().getDay(world);
-        else monthday = 1 + getDay(world);
+        weekday = TimeHelper.getWeekday(world.getDayTime()); //TODO: is this correct?
+        ISeasonProvider optional = SSeasonsAPI.instance().getSeasonProvider(world.dimension()).orElse(null);
+        if (optional != null)
+            dayOfMonth = optional.getDay(world);
+        else dayOfMonth = 1 + getDay(world);
         year = 1 + getYear(world);
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
         tag.putByte("Weekday", (byte) getWeekday().ordinal());
-        tag.putShort("Day", (short) monthday);
+        tag.putShort("Day", (short) dayOfMonth);
         tag.putShort("Year", (short) year);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT tag) {
+    public void deserializeNBT(CompoundTag tag) {
         weekday = DayOfWeek.values()[tag.getByte("Weekday")];
-        monthday = tag.getShort("Day");
+        dayOfMonth = tag.getShort("Day");
         year = tag.getShort("Year");
     }
 
-    public static int getYear(World world) {
-        return (int) Math.floor((double) TimeHelper.getElapsedDays(world.getDayTime()) / 4 / seasonLength(world));
+    public static int getYear(Level world, long time) {
+        return (int) Math.floor((double) TimeHelper.getElapsedDays(time) / 4 / seasonLength(world));
     }
 
-    public static int getDay(World world) {
+    public static int getYear(Level world) {
+        return getYear(world, world.getDayTime());
+    }
+
+    public static int getDay(Level world) {
         return (int) (TimeHelper.getElapsedDays(world.getDayTime()) % seasonLength(world));
     }
 
-    private static int serverTypeMultiplier(World world) {
+    private static int serverTypeMultiplier(Level world) {
         return (world.isClientSide && isSinglePlayer) ||
                 (!world.isClientSide && Objects.requireNonNull(world.getServer()).isSingleplayer())
                 ? 1 : (int) (TimeUnitRegistry.get("dedicated_server_season_multiplier"));
     }
 
-    public static float seasonLength(World world) {
+    public static float seasonLength(Level world) {
         return (float) (TimeUnitRegistry.get("season_length_multiplier") * DAYS_PER_SEASON * serverTypeMultiplier(world));
     }
 

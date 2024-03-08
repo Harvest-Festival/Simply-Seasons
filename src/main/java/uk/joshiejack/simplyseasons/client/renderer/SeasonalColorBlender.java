@@ -1,24 +1,21 @@
 package uk.joshiejack.simplyseasons.client.renderer;
-
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.FoliageColors;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeColors;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.world.level.ColorResolver;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraft.world.level.FoliageColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
-import uk.joshiejack.simplyseasons.plugins.BetterWeatherPlugin;
-import uk.joshiejack.simplyseasons.plugins.SereneSeasonsPlugin;
+import uk.joshiejack.simplyseasons.plugin.SereneSeasonsPlugin;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 
 
@@ -45,43 +42,43 @@ public class SeasonalColorBlender {
     }
 
     @SubscribeEvent
-    public static void onBlockColors(ColorHandlerEvent.Block colors) {
-        if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded) return; //They can handle this
-        colors.getBlockColors().register((state, reader, pos, color) -> {
-            World world = Minecraft.getInstance().level;
-            LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
-            if (optional.isPresent()) {
-                SeasonData data = SeasonData.get(optional.resolve().get().getSeason(world));
-                return getBlendedColor(FoliageColors.getBirchColor(), data.leaves, 2);
+    public static void onBlockColors(RegisterColorHandlersEvent.Block colors) {
+        if (SereneSeasonsPlugin.loaded) return; //They can handle this
+        colors.register((state, reader, pos, color) -> {
+            Level world = Minecraft.getInstance().level;
+            ISeasonProvider optional = SSeasonsAPI.instance().getSeasonProvider(world.dimension()).orElse(null);
+            if (optional != null) {
+                SeasonData data = SeasonData.get(optional.getSeason(world));
+                return getBlendedColor(FoliageColor.getBirchColor(), data.leaves(), 2);
             }
 
-            return FoliageColors.getBirchColor();
+            return FoliageColor.getBirchColor();
         }, Blocks.BIRCH_LEAVES);
     }
 
     @SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
-        if (SereneSeasonsPlugin.loaded || BetterWeatherPlugin.loaded) return;  //They can handle this
+        if (SereneSeasonsPlugin.loaded) return;  //They can handle this
         ColorResolver grass = BiomeColors.GRASS_COLOR_RESOLVER;
         ColorResolver foliage = BiomeColors.FOLIAGE_COLOR_RESOLVER;
         BiomeColors.GRASS_COLOR_RESOLVER = (biome, x, z) -> {
-            World world = Minecraft.getInstance().level;
+            Level world = Minecraft.getInstance().level;
             int original = grass.getColor(biome, x, z);
-            LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
-            if (optional.isPresent()) {
-                SeasonData data = SeasonData.get(optional.resolve().get().getSeason(world));
-                return getBlendedColor(original, data.grass, 2);
+            ISeasonProvider optional = SSeasonsAPI.instance().getSeasonProvider(world.dimension()).orElse(null);
+            if (optional != null) {
+                SeasonData data = SeasonData.get(optional.getSeason(world));
+                return getBlendedColor(original, data.grass(), 2);
             } else return original;
         };
 
         BiomeColors.FOLIAGE_COLOR_RESOLVER = (biome, x, z) -> {
-            World world = Minecraft.getInstance().level;
+            Level world = Minecraft.getInstance().level;
             int original = foliage.getColor(biome, x, z);
-            LazyOptional<ISeasonProvider> optional = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
-            if (optional.isPresent()) {
-                Season season = optional.resolve().get().getSeason(world);
+            ISeasonProvider optional = SSeasonsAPI.instance().getSeasonProvider(world.dimension()).orElse(null);
+            if (optional != null) {
+                Season season = optional.getSeason(world);
                 SeasonData data = SeasonData.get(season);
-                return getBlendedColor(original, data.leaves, season == Season.AUTUMN ? 8 : 2);
+                return getBlendedColor(original, data.leaves(), season == Season.AUTUMN ? 8 : 2);
             } else return original;
         };
     }

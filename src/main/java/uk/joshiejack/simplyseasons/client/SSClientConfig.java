@@ -1,24 +1,24 @@
 package uk.joshiejack.simplyseasons.client;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class SSClientConfig {
-    public static ForgeConfigSpec.BooleanValue enableHUD;
-    public static ForgeConfigSpec.BooleanValue enableCropsTooltip;
-    public static ForgeConfigSpec.BooleanValue showWetDryTooltip;
-    public static ForgeConfigSpec.IntValue overallFogDensity;
-    public static ForgeConfigSpec.IntValue snowDensityMultiplier;
-    public static ForgeConfigSpec.IntValue blizzardDensityMultiplier;
-    public static ForgeConfigSpec.IntValue fogDensityMultiplier;
-    public static ForgeConfigSpec.IntValue dryFogDensityMultiplier;
-    public static ForgeConfigSpec.BooleanValue enableBlizzardNoise;
-    public static ForgeConfigSpec.BooleanValue enableBlizzardTexture;
-    public static ForgeConfigSpec.BooleanValue seasonalMusic;
-    public static ForgeConfigSpec.BooleanValue seasonInDebug;
-    public static ForgeConfigSpec.BooleanValue requireItemInInventoryForHUD;
-    public static ForgeConfigSpec.EnumValue<DryFog> dryFogSetting;
+    public static ModConfigSpec.BooleanValue enableHUD;
+    public static ModConfigSpec.BooleanValue enableCropsTooltip;
+    public static ModConfigSpec.BooleanValue showWetDryTooltip;
+    public static ModConfigSpec.IntValue overallFogDensity;
+    public static ModConfigSpec.IntValue snowDensityMultiplier;
+    public static ModConfigSpec.IntValue blizzardDensityMultiplier;
+    public static ModConfigSpec.IntValue fogDensityMultiplier;
+    public static ModConfigSpec.IntValue dryFogDensityMultiplier;
+    public static ModConfigSpec.BooleanValue enableBlizzardNoise;
+    public static ModConfigSpec.BooleanValue enableBlizzardTexture;
+    public static ModConfigSpec.BooleanValue seasonalMusic;
+    public static ModConfigSpec.BooleanValue seasonInDebug;
+    public static ModConfigSpec.BooleanValue requireItemInInventoryForHUD;
+    public static ModConfigSpec.EnumValue<DryFog> dryFogSetting;
 
-    SSClientConfig(ForgeConfigSpec.Builder builder) {
+    SSClientConfig(ModConfigSpec.Builder builder) {
         builder.push("Information");
         enableHUD = builder.define("Enable season HUD", false);
         enableCropsTooltip = builder.define("Enable crops season tooltip", true);
@@ -39,8 +39,8 @@ public class SSClientConfig {
         builder.pop();
     }
 
-    public static ForgeConfigSpec create() {
-        return new ForgeConfigSpec.Builder().configure(SSClientConfig::new).getValue();
+    public static ModConfigSpec create() {
+        return new ModConfigSpec.Builder().configure(SSClientConfig::new).getValue();
     }
 
     public enum DryFog {

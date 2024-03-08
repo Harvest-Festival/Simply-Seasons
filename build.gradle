@@ -1,61 +1,9 @@
-buildscript {
-    repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'maven'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven { // Vanilla
-        name 'Vanilla'
-        url 'https://libraries.minecraft.net/'
-    }
-    maven { // Forge
-        name 'ForgeFS'
-        url 'https://maven.minecraftforge.net/'
-    }
-    maven { // JEI
-        name 'DVS1 Maven FS'
-        url 'https://dvs1.progwml6.com/files/maven'
-    }
-    maven { //PenguinLib
-        name 'Joshiejack'
-        url 'https://maven.joshiejack.uk/'
-    }
-    maven { //CurseForge
-        url "https://cursemaven.com"
-    }
-    maven {
-        // Shedaniel's maven (Architectury API)
-        url = "https://maven.architectury.dev"
-        content {
-            includeGroup "me.shedaniel"
-        }
-    }
-    maven {
-        // saps.dev Maven (KubeJS and Rhino)
-        // you can also use Lat's Maven @ https://maven.latvian.dev/
-        url = "https://maven.saps.dev/minecraft"
-        content {
-            includeGroup "dev.latvian.mods"
-        }
-    }
-    maven {
-        name = "Jared's Maven (CRT)"
-        url "https://maven.blamejared.com"
-    }
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.0.57'
 }
 
 ext.build_number=""
@@ -64,119 +12,115 @@ if (System.getenv().BUILD_NUMBER) {
 }
 
 version = "${minecraft_version}-${mod_version}${build_number}"
-group = 'uk.joshiejack.simplyseasons' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'Simply-Seasons'
+group = mod_group_id
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
-
-mixin {
-    add sourceSets.main, "simplyseasons.refmap.json"
+repositories {
+    mavenLocal()
+    maven {
+        // Jared's Maven (JEI)
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // Shedaniel's maven (Architectury API)
+        url = "https://maven.architectury.dev"
+        content {
+            includeGroup "dev.architectury"
+        }
+    }
+    maven {
+        // saps.dev Maven (KubeJS and Rhino)
+        url = "https://maven.saps.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                url "https://cursemaven.com"
+            }
+        }
+        filter {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-minecraft {
-    mappings channel: 'official', version: '1.16.5'
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+base {
+    archivesName = 'mod_id'
+}
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    runs {
-        client {
-            workingDirectory project.file('run')
-            arg "-mixin.config=simplyseasons.mixins.json"
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-            mods {
-                simplyseasons {
-                    source sourceSets.main
-                }
-            }
-        }
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
 
-        server {
-            workingDirectory project.file('run')
-            arg "-mixin.config=simplyseasons.mixins.json"
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+        modSource project.sourceSets.main
+    }
 
-            mods {
-                simplyseasons {
-                    source sourceSets.main
-                }
-            }
-        }
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
 
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
 
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'simplyseasons', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+    gameTestServer {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
 
-            mods {
-                simplyseasons {
-                    source sourceSets.main
-                }
-            }
-        }
+    data {
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.16'
-    compile fg.deobf("uk.joshiejack.penguinlib:Penguin-Lib:${minecraft_version}-${penguinlib_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
-    compileOnly fg.deobf("curse.maven:serene_seasons-291874:${serene_seasons_version}")
-    //runtimeOnly fg.deobf("curse.maven:serene_seasons-291874:${serene_seasons_version}")
-    compileOnly fg.deobf("curse.maven:better_weather-400714:${better_weather_version}")
-    //runtimeOnly fg.deobf("curse.maven:better_weather-400714:${better_weather_version}")
-    compileOnly fg.deobf("curse.maven:morpheus-69118:${morpheus_version}")
-    //runtimeOnly fg.deobf("curse.maven:morpheus-69118:${morpheus_version}")
-    compileOnly fg.deobf("me.shedaniel:architectury-forge:${architectury_version}")
-    compileOnly fg.deobf("dev.latvian.mods:rhino:${rhino_version}")
-    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-    compileOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${bookshelf_version}")
-    //runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${bookshelf_version}")
-    compileOnly fg.deobf("net.darkhax.botanybots:BotanyPots-1.16.5:${botanypots_version}")
-    //runtimeOnly fg.deobf("net.darkhax.botanybots:BotanyPots-1.16.5:${botanypots_version}")
-
+    implementation "net.neoforged:neoforge:${neo_version}"
+    implementation "uk.joshiejack.penguinlib:Penguin-Lib:${minecraft_version}-${penguinlib_version}"
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    compileOnly "dev.latvian.mods:kubejs-neoforge:${kubejs_version}"
+    implementation "dev.latvian.mods:rhino-neoforge:${rhino_version}"
+    compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
+    compileOnly("curse.maven:glitchcore-955399:${glitchcore_version}")
+    compileOnly "curse.maven:sereneseasons-291874:${sereneseasons_version}"
 }
 
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "Simply-Seasons",
-            "Specification-Vendor": "joshiejack",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"joshiejack",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs": "simplyseasons.mixins.json"
-        ])
+minecraft {
+    accessTransformers {
+        file('src/main/resources/META-INF/accesstransformer.cfg')
     }
 }
 
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            neo_version         : neo_version, neo_version_range: neo_version_range,
+            penguinlib_version  : penguinlib_version, penguinlib_version_range: penguinlib_version_range,
+            loader_version_range: loader_version_range,
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors         : mod_authors, mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties + [project: project]
+    }
+}
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            artifactId 'Simply-Seasons'
-            artifact jar
+        register('mavenJava', MavenPublication) {
+            artifactId = mod_name.replace(" ", "-")
+            from components.java
         }
     }
     repositories {
@@ -186,4 +130,8 @@ publishing {
             mavenLocal()
         }
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }

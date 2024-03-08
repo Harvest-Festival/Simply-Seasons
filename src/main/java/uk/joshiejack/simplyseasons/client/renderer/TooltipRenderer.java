@@ -1,13 +1,14 @@
 package uk.joshiejack.simplyseasons.client.renderer;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.client.SSClientConfig;
+import uk.joshiejack.simplyseasons.world.loot.SeasonPredicate;
 import uk.joshiejack.simplyseasons.world.season.SeasonData;
 import uk.joshiejack.simplyseasons.world.season.SeasonalCrops;
 
@@ -17,10 +18,11 @@ public class TooltipRenderer {
     @SubscribeEvent
     public static void onToolTip(ItemTooltipEvent event) {
         if (!SSClientConfig.enableCropsTooltip.get() || SeasonalCrops.isSimplySeasonsGrowthDisabled()) return;
-        if (SeasonalCrops.ITEMS.containsKey(event.getItemStack().getItem())) {
-            SeasonalCrops.ITEMS.get(event.getItemStack().getItem()).seasons()
+        SeasonPredicate predicate = SeasonalCrops.itemPredicate(event.getItemStack().getItem());
+        if (predicate != null) {
+            predicate.seasons()
                     .filter(season -> SSClientConfig.showWetDryTooltip.get() || season.ordinal() <= Season.WINTER.ordinal())
-                    .forEach(season -> event.getToolTip().add(SeasonsHUDRender.getName(season).withStyle(SeasonData.get(season).hud)));
+                    .forEach(season -> event.getToolTip().add(SeasonsHUDRender.getName(season).copy().withStyle(SeasonData.get(season).hud())));
         }
     }
 }

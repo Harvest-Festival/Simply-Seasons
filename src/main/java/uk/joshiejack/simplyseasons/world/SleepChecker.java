@@ -1,13 +1,13 @@
 package uk.joshiejack.simplyseasons.world;
 
-import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
-import net.minecraftforge.event.world.SleepFinishedTimeEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
+import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.player.SleepingTimeCheckEvent;
+import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
+import uk.joshiejack.penguinlib.util.helper.TimeHelper;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
@@ -18,11 +18,11 @@ public class SleepChecker {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onSlept(SleepFinishedTimeEvent event) {
         if (SimplySeasons.SSConfig.wakePlayerUpAtSunrise.get()) {
-            if (event.getWorld() instanceof World) {
-                ((World) event.getWorld()).getCapability(SSeasonsAPI.SEASONS_CAPABILITY).ifPresent(provider -> {
-                    Season season = provider.getSeason((World) event.getWorld());
+            if (event.getLevel() instanceof Level level) {
+                SSeasonsAPI.instance().getSeasonProvider(level.dimension()).ifPresent(provider -> {
+                    Season season = provider.getSeason(level);
                     SeasonData data = SeasonData.get(season);
-                    long sunrise = 6000 - data.sunrise;
+                    long sunrise = 6000 - data.sunrise();
                     event.setTimeAddition(event.getNewTime() - sunrise);
                 });
             }
@@ -31,17 +31,17 @@ public class SleepChecker {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void checkSleepTime(SleepingTimeCheckEvent event) {
-        long time = TimeHelper.getTimeOfDay(event.getPlayer().level.getDayTime());
+        long time = TimeHelper.getTimeOfDay(event.getEntity().level().getDayTime());
         if (SimplySeasons.SSConfig.sleepAtAnytime.get())
             event.setResult(Event.Result.ALLOW);
         else if (SimplySeasons.SSConfig.noSleepingBefore.get() >= 6000 && time >= 6000 && time <= SimplySeasons.SSConfig.noSleepingBefore.get()) {
             event.setResult(Event.Result.DENY);
         } else if (SimplySeasons.SSConfig.noSleepingBetweenWakeupAndSunset.get()) {
-            event.getPlayer().level.getCapability(SSeasonsAPI.SEASONS_CAPABILITY).ifPresent(provider -> {
-                Season season = provider.getSeason(event.getPlayer().level);
+            SSeasonsAPI.instance().getSeasonProvider(event.getEntity().level().dimension()).ifPresent(provider -> {
+                Season season = provider.getSeason(event.getEntity().level());
                 SeasonData data = SeasonData.get(season);
-                long sunrise = SimplySeasons.SSConfig.wakePlayerUpAtSunrise.get() ? data.sunrise : 6000;
-                if (time >= sunrise && time <= data.sunset)
+                long sunrise = SimplySeasons.SSConfig.wakePlayerUpAtSunrise.get() ? data.sunrise() : 6000;
+                if (time >= sunrise && time <= data.sunset())
                     event.setResult(Event.Result.DENY);
             });
         }

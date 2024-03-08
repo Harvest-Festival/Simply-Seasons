@@ -1,17 +1,18 @@
 package uk.joshiejack.simplyseasons.data;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import uk.joshiejack.penguinlib.data.database.CSVUtils;
-import uk.joshiejack.penguinlib.data.generators.AbstractDatabaseProvider;
+import uk.joshiejack.penguinlib.data.generator.AbstractDatabaseProvider;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.api.Weather;
@@ -21,7 +22,7 @@ import java.util.Objects;
 
 @SuppressWarnings("SameParameterValue")
 public class SSDatabase extends AbstractDatabaseProvider {
-    public SSDatabase(DataGenerator gen) {
+    public SSDatabase(PackOutput gen) {
         super(gen, SimplySeasons.MODID);
     }
 
@@ -29,13 +30,13 @@ public class SSDatabase extends AbstractDatabaseProvider {
     protected void addDatabaseEntries() {
         addTimeUnit("season_length_multiplier", 4);
         addTimeUnit("dedicated_server_season_multiplier", 3);
-        addSeasonData(Season.SPRING, TextFormatting.GREEN, 0, "0x80B76C", "0", "0x87CEFA", 6000, 20500);
-        addSeasonData(Season.SUMMER, TextFormatting.YELLOW, 0.1, "0", "0x4A9C2E", "0x79a7ff", 5000, 21500);
-        addSeasonData(Season.AUTUMN, TextFormatting.GOLD, -0.1, "0xB25900", "0xFF9900", "0x8CBED6", 7000, 19000);
-        addSeasonData(Season.WINTER, TextFormatting.GRAY, -0.7, "0xFFFFFF", "0xE6E6E6", "0xBFFFFF", 8000, 16500);
-        addSeasonData(Season.WET, TextFormatting.BLUE, -0.1, "0", "0x55FF1C", "0x334873", 0, 0);
-        addSeasonData(Season.DRY, TextFormatting.GOLD, 0, "0", "0", "0x638DBF", 0, 0);
-        addSeasonToWorld(World.OVERWORLD, Season.MAIN);
+        addSeasonData(Season.SPRING, ChatFormatting.GREEN, 0, "0x80B76C", "0", "0x87CEFA", 6000, 20500);
+        addSeasonData(Season.SUMMER, ChatFormatting.YELLOW, 0.1, "0", "0x4A9C2E", "0x79a7ff", 5000, 21500);
+        addSeasonData(Season.AUTUMN, ChatFormatting.GOLD, -0.1, "0xB25900", "0xFF9900", "0x8CBED6", 7000, 19000);
+        addSeasonData(Season.WINTER, ChatFormatting.GRAY, -0.7, "0xFFFFFF", "0xE6E6E6", "0xBFFFFF", 8000, 16500);
+        addSeasonData(Season.WET, ChatFormatting.BLUE, -0.1, "0", "0x55FF1C", "0x334873", 0, 0);
+        addSeasonData(Season.DRY, ChatFormatting.GOLD, 0, "0", "0", "0x638DBF", 0, 0);
+        addSeasonToWorld(Level.OVERWORLD, Season.MAIN);
         addSeasonPredicate("spring", Season.SPRING);
         addSeasonPredicate("summer", Season.SUMMER);
         addSeasonPredicate("autumn", Season.AUTUMN);
@@ -84,19 +85,19 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addSeasonalWeather(Season.WINTER, Weather.RAIN, 50);
         addSeasonalWeather(Season.WINTER, Weather.CLEAR, 45);
         addSeasonalWeather(Season.WINTER, Weather.STORM, 5);
-        addRandomWeather(World.OVERWORLD, Weather.CLEAR, 65);
-        addRandomWeather(World.OVERWORLD, Weather.RAIN, 25);
-        addRandomWeather(World.OVERWORLD, Weather.STORM, 5);
-        addRandomWeather(World.OVERWORLD, Weather.FOG, 5);
-        addWeatheredWorld(World.OVERWORLD, "seasonal", Weather.CLEAR, 24000, 1);
+        addRandomWeather(Level.OVERWORLD, Weather.CLEAR, 65);
+        addRandomWeather(Level.OVERWORLD, Weather.RAIN, 25);
+        addRandomWeather(Level.OVERWORLD, Weather.STORM, 5);
+        addRandomWeather(Level.OVERWORLD, Weather.FOG, 5);
+        addWeatheredWorld(Level.OVERWORLD, "seasonal", Weather.CLEAR, 24000, 1);
     }
 
     private void addCropGrowth(String predicate, Block item) {
-        addCropGrowth(predicate, item.getRegistryName());
+        addCropGrowth(predicate, BuiltInRegistries.BLOCK.getKey(item));
     }
 
     private void addCropGrowth(String predicate, Item item) {
-        addCropGrowth(predicate, item.getRegistryName());
+        addCropGrowth(predicate, BuiltInRegistries.ITEM.getKey(item));
     }
 
     private void addCropGrowth(String predicate, ResourceLocation item) {
@@ -107,12 +108,12 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addEntry("season_predicates", "Name,Season", CSVUtils.join(name, season.name().toLowerCase(Locale.ROOT)));
     }
 
-    private void addSeasonToWorld(RegistryKey<World> world, Season... seasons) {
+    private void addSeasonToWorld(ResourceKey<Level> world, Season... seasons) {
         addEntry("seasonal_worlds", "World,Seasons", CSVUtils.join(world.location().toString(),
                 CSVUtils.join(Lists.newArrayList(seasons).stream().map(s -> s.name().toLowerCase(Locale.ROOT)).toArray())));
     }
 
-    private void addSeasonData(Season season, TextFormatting color, double temperature, String leaves, String grass, String sky, int sunrise, int sunset) {
+    private void addSeasonData(Season season, ChatFormatting color, double temperature, String leaves, String grass, String sky, int sunrise, int sunset) {
         addEntry("seasons_data", "Season,HUD,Temperature,Leaves,Grass,Sky,Sunrise,Sunset",
                 CSVUtils.join(season.name().toLowerCase(Locale.ROOT), color.getName(), temperature, leaves, grass, sky, sunrise, sunset));
     }
@@ -121,11 +122,11 @@ public class SSDatabase extends AbstractDatabaseProvider {
         addEntry("seasonal_weather", "Season,Weather,Weight", CSVUtils.join(season.name().toLowerCase(Locale.ROOT), weather.name().toLowerCase(Locale.ROOT), weight));
     }
 
-    private void addWeatheredWorld(RegistryKey<World> world, String type, Weather weather, int frequency, int chance) {
+    private void addWeatheredWorld(ResourceKey<Level> world, String type, Weather weather, int frequency, int chance) {
         addEntry("weathered_worlds", "World,Type,Default Weather,Frequency,Chance", CSVUtils.join(world.location().toString(), type, weather, frequency, chance));
     }
 
-    private void addRandomWeather(RegistryKey<World> world, Weather weather, int weight) {
+    private void addRandomWeather(ResourceKey<Level> world, Weather weather, int weight) {
         addEntry("random_weather", "World,Weather,Weight", CSVUtils.join(world.location().toString(), weather.name().toLowerCase(Locale.ROOT), weight));
     }
 }

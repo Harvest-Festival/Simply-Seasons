@@ -1,7 +1,7 @@
 package uk.joshiejack.simplyseasons.api;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.Set;
 
@@ -17,5 +17,5 @@ public interface ILocalizedSeasonProvider {
      * @param pos       The block pos to check
      * @return a set of seasons at that location
      */
-    Set<Season> getSeasonsAt(World world, BlockPos pos);
+    Set<Season> getSeasonsAt(Level world, BlockPos pos);
 }

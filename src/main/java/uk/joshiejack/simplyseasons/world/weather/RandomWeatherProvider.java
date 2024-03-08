@@ -1,7 +1,8 @@
 package uk.joshiejack.simplyseasons.world.weather;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import uk.joshiejack.simplyseasons.api.Weather;
+
 
 public class RandomWeatherProvider extends AbstractWeatherProvider  {
     public RandomWeatherProvider(Weather defaultWeather, int frequency, int chance) {
@@ -9,7 +10,7 @@ public class RandomWeatherProvider extends AbstractWeatherProvider  {
     }
 
     @Override
-    protected Weather getRandom(World world) {
+    protected Weather getRandom(Level world) {
         return WeatheredWorlds.getRandomWeatherForWorld(world.dimension(), world.random);
     }
 }

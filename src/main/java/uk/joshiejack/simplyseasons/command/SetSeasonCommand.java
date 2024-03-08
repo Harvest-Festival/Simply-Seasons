@@ -1,12 +1,11 @@
 package uk.joshiejack.simplyseasons.command;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.server.command.EnumArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.server.command.EnumArgument;
 import uk.joshiejack.simplyseasons.SimplySeasons;
 import uk.joshiejack.simplyseasons.api.ISeasonProvider;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
@@ -15,21 +14,21 @@ import uk.joshiejack.simplyseasons.api.Season;
 import java.util.Locale;
 
 public class SetSeasonCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("season")
                 .then(Commands.argument("season", EnumArgument.enumArgument(CommandSeason.class))
                         .executes(ctx -> {
-                            World world = ctx.getSource().getLevel();
-                            LazyOptional<ISeasonProvider> provider = world.getCapability(SSeasonsAPI.SEASONS_CAPABILITY);
-                            if (provider.isPresent()) {
+                            Level world = ctx.getSource().getLevel();
+                            ISeasonProvider provider = SSeasonsAPI.instance().getSeasonProvider(world.dimension()).orElse(null);
+                            if (provider != null) {
                                 Season season = Season.valueOf(ctx.getArgument("season", CommandSeason.class).name());
-                                provider.resolve().get().setSeason(world, season);
-                                ctx.getSource().sendSuccess(new TranslationTextComponent("command." +
+                                provider.setSeason(world, season);
+                                ctx.getSource().sendSuccess(() -> Component.translatable("command." +
                                         SimplySeasons.MODID + ".set_season." + season.name().toLowerCase(Locale.ROOT)), true);
                                 return 1;
                             }
 
-                            ctx.getSource().sendFailure(new TranslationTextComponent("command." + SimplySeasons.MODID + ".no_seasons_world"));
+                            ctx.getSource().sendFailure(Component.translatable("command." + SimplySeasons.MODID + ".no_seasons_world"));
                             return 0;
                         }));
     }

@@ -1,25 +1,27 @@
 package uk.joshiejack.simplyseasons.world.season;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.util.INBTSerializable;
-import uk.joshiejack.penguinlib.util.helpers.TimeHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.neoforged.neoforge.common.Tags;
+import uk.joshiejack.penguinlib.util.helper.TimeHelper;
 import uk.joshiejack.simplyseasons.api.SSeasonsAPI;
 import uk.joshiejack.simplyseasons.api.Season;
 import uk.joshiejack.simplyseasons.world.CalendarDate;
+import uk.joshiejack.simplyseasons.world.SSSavedData;
 
-import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSerializable<CompoundNBT> {
+public class SeasonsProvider extends AbstractSeasonsProvider {
     private final EnumMap<Season, EnumSet<Season>> seasonsSets = new EnumMap<>(Season.class);
     private final Season[] seasons;
     private final int length;
@@ -34,23 +36,25 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
     }
 
     @Override
-    public void recalculate(World world) {
+    public void recalculate(Level world) {
         long time = world.getDayTime();
         season = seasons[Math.max(0, (int) Math.floor(((float) TimeHelper.getElapsedDays(time) / CalendarDate.seasonLength(world)) % length))];
         super.recalculate(world); //call the super to perform updates
+        if (world instanceof ServerLevel level)
+            SSSavedData.get(level).setDirty();
     }
 
     @Override
-    public Season getSeason(World world) {
+    public Season getSeason(Level world) {
         return season;
     }
 
     @Override
-    public void setSeason(World world, Season season) {
+    public void setSeason(Level world, Season season) {
         if (world.isClientSide)
             this.season = season;
         else {
-            ServerWorld sWorld = (ServerWorld) world;
+            ServerLevel sWorld = (ServerLevel) world;
             if (this.season.ordinal() == season.ordinal()) return;
             long length = (long) (CalendarDate.seasonLength(world) * 24000L);
             switch (this.season) {
@@ -78,38 +82,36 @@ public class SeasonsProvider extends AbstractSeasonsProvider implements INBTSeri
         }
     }
 
-    private Season fromBiomeOr(World world, Season season, Biome biome) {
+    private static boolean isTag(Registry<Biome> biomeRegistry, Holder<Biome> biomeHolder, TagKey<Biome> tag) {
+        return biomeRegistry.getOrCreateTag(tag).contains(biomeHolder);
+    }
+
+    private Season fromBiomeOr(Level world, Season season, Holder<Biome> biome) {
         //If we can snow, it is winter
         //Savanna, Wet season = Summer
         //Desert/Mesa, Wet season = Winter
         //Jungle, Dry season = Summer/Autumn
-        RegistryKey<Biome> key = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getResourceKey(biome).get();
-        return BiomeDictionary.hasType(key, BiomeDictionary.Type.SAVANNA) ? season == Season.SUMMER ? Season.WET : Season.DRY :
-                BiomeDictionary.hasType(key, BiomeDictionary.Type.SANDY) ? season == Season.WINTER ? Season.WET : Season.DRY :
-                        BiomeDictionary.hasType(key, BiomeDictionary.Type.JUNGLE) ? season == Season.SUMMER || season == Season.AUTUMN ? Season.DRY : Season.WET :
+        Registry<Biome> biomeRegistry = world.registryAccess().registryOrThrow(Registries.BIOME);
+        return isTag(biomeRegistry, biome, BiomeTags.IS_SAVANNA) ? season == Season.SUMMER ? Season.WET : Season.DRY :
+                isTag(biomeRegistry, biome, Tags.Biomes.IS_SANDY) ? season == Season.WINTER ? Season.WET : Season.DRY :
+                       isTag(biomeRegistry, biome, BiomeTags.IS_JUNGLE) ? season == Season.SUMMER || season == Season.AUTUMN ? Season.DRY : Season.WET :
                                 season;
     }
 
     @Override
-    public Set<Season> getSeasonsAt(World world, BlockPos pos) {
-        Biome biome = world.getBiome(pos);
+    public Set<Season> getSeasonsAt(Level world, BlockPos pos) {
+        Holder<Biome> biome = world.getBiome(pos);
         Set<Season> seasons = EnumSet.noneOf(Season.class);
         SSeasonsAPI.LOCALIZED_SEASON_HANDLER.forEach(local ->
                 seasons.addAll(local.getSeasonsAt(world, pos)));
-        return seasons.isEmpty() ? seasonsSets.get(biome.shouldSnow(world, pos) ? Season.WINTER: fromBiomeOr(world, season, biome)) : seasons;
+        return seasons.isEmpty() ? seasonsSets.get(biome.value().shouldSnow(world, pos) ? Season.WINTER: fromBiomeOr(world, season, biome)) : seasons;
     }
 
-    @Nullable
-    @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT data = new CompoundNBT();
+    public void save(CompoundTag data) {
         data.putByte("Season", (byte) season.ordinal());
-        return data;
     }
 
-    @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void load(CompoundTag nbt) {
         season = Season.values()[nbt.getByte("Season")];
     }
-
 }
